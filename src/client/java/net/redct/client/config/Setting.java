@@ -1,0 +1,23 @@
+package net.redct.client.config;
+
+import java.util.function.BooleanSupplier;
+
+public abstract class Setting {
+    private final String id;
+    private final String name;
+    private BooleanSupplier visibilityCondition = () -> true; // visible by default
+
+    public Setting(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Setting visibleWhen(BooleanSupplier condition) {
+        this.visibilityCondition = condition;
+        return this;
+    }
+
+    public boolean isVisible() {
+        return visibilityCondition.getAsBoolean();
+    }
+}

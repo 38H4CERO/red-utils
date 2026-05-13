@@ -1,0 +1,16 @@
+{
+	"required": true,
+	"package": "net.redct.client.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"client": [
+		"ExampleClientMixin",
+		"MapDataMixin",
+		"ScoreBoardMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}

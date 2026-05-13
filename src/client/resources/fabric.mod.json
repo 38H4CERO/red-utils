@@ -1,0 +1,30 @@
+{
+	"schemaVersion": 1,
+	"id": "red-utils",
+	"version": "${version}",
+	"name": "Red Utils",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"RedCherryTree"
+	],
+	"license": "CC0-1.0",
+	"icon": "assets/red-utils/icon.png",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"net.redct.client.RedUtilsClient"
+		]
+	},
+	"mixins": [
+		{
+			"config": "red-utils.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.19.2",
+		"minecraft": "~26.1",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}
