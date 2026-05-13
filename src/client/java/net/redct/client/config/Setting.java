@@ -20,4 +20,12 @@ public abstract class Setting {
     public boolean isVisible() {
         return visibilityCondition.getAsBoolean();
     }
+
+    public String getId() {
+        return id;
+    }
+    public String getName() {
+        return name;
+    }
+
 }

@@ -8,9 +8,9 @@ public class ModuleManager {
     private static final List<Module> modules = new ArrayList<>();
 
     public static void init() {
-        register(new TestModule());
         register(new ExampleTextRender());
         register(new DungeonClearAlert());
+        register(new TestModule());
     }
 
     public static void register(Module module) {

@@ -17,6 +17,7 @@ public class ExampleTextRender extends Module{
     public ExampleTextRender(){
         super("example_text","Example Text Render", Category.MISC);
         HudElementRegistry.addFirst(Identifier.fromNamespaceAndPath(MOD_ID, "coordinates_overlay"), this::render);
+        HudManager.register(guiText); // register so HudEditorScreen can see and move it
     }
 
     // TODO

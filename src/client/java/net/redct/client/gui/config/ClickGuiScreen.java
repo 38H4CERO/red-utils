@@ -44,6 +44,7 @@ public class ClickGuiScreen extends Screen {
             }
         }
         return super.mouseClicked(event, doubleClick);
+
     }
 
     @Override

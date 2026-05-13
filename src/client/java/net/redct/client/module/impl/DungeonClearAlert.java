@@ -1,6 +1,6 @@
 package net.redct.client.module.impl;
 
-
+import net.redct.client.config.SliderSetting;
 import net.redct.client.module.Category;
 import net.redct.client.module.Module;
 import net.redct.client.utils.DungeonSession;
@@ -11,8 +11,13 @@ import static net.redct.client.utils.DungeonUtils.*;
 
 
 public class DungeonClearAlert extends Module {
+    public final SliderSetting volume = new SliderSetting("volume", "Volume", 100, 0, 100);
+    public final SliderSetting volume2 = new SliderSetting("volume2", "Volume", 100, 0, 100);
+
     public DungeonClearAlert(){
         super("dungeonClearAlert","Clear alert", Category.DUNGEONS);
+        registerSetting(volume);
+        registerSetting(volume2);
     }
 
 

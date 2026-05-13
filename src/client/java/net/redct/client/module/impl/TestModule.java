@@ -5,7 +5,7 @@ import net.redct.client.module.Module;
 
 public class TestModule extends Module{
     public TestModule(){
-        super("test","Test", Category.MISC);
+        super("test","Test", Category.DUNGEONS);
     }
 
     // TODO

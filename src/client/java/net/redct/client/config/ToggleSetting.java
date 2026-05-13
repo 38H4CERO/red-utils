@@ -10,4 +10,5 @@ public class ToggleSetting extends Setting {
 
     public boolean getValue() { return value; }
     public void toggle() { value = !value; }
+    public void setValue(boolean value) { this.value = value; }
 }
