@@ -10,7 +10,7 @@ public interface HudInterface {
     float getScale();
     void setXY(int x, int y);
     void setScale(float scale);
-    public void render(GuiGraphicsExtractor graphics, DeltaTracker tickCounter);
+    void render(GuiGraphicsExtractor graphics, DeltaTracker tickCounter);
     int getWidth();
     int getHeight();
 }

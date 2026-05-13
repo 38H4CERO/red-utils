@@ -64,6 +64,23 @@ public class ClickGuiScreen extends Screen {
     }
 
     @Override
+    public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
+
+        // 1. Extract the raw numbers from the new Mojang event object
+        double mouseX = event.x();
+        double mouseY = event.y();
+        int button = event.button();
+
+        for (Frame frame : frames) {
+            // 2. Forward the extracted numbers to your custom frames!
+            frame.mouseDragged(mouseX, mouseY, button);
+        }
+
+        // 3. Pass the new event object back to the superclass
+        return super.mouseDragged(event, dragX, dragY);
+    }
+
+    @Override
     public boolean isInGameUi() {
         return true; // Keeps the background dark
     }

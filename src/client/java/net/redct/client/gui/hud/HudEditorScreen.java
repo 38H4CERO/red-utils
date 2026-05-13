@@ -5,9 +5,12 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.redct.client.config.ConfigManager;
+import java.util.List;
 
 public class HudEditorScreen extends Screen {
     private HudInterface dragging = null;
+    private int dragOffsetX = 0;
+    private int dragOffsetY = 0;
 
     public HudEditorScreen() {
         super(Component.literal("HUD Editor"));
@@ -31,9 +34,16 @@ public class HudEditorScreen extends Screen {
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        for (HudInterface element : HudManager.getElements()) {
+        // Loop BACKWARDS so if two elements overlap, you grab the one on top!
+        List<HudInterface> elements = HudManager.getElements();
+        for (int i = elements.size() - 1; i >= 0; i--) {
+            HudInterface element = elements.get(i);
+
             if (isHovering(event.x(), event.y(), element)) {
                 dragging = element;
+                // Record exactly where on the element the mouse grabbed it
+                dragOffsetX = (int) (event.x() - element.getX());
+                dragOffsetY = (int) (event.y() - element.getY());
                 return true;
             }
         }
@@ -43,10 +53,9 @@ public class HudEditorScreen extends Screen {
     @Override
     public boolean mouseDragged(MouseButtonEvent event, double dx, double dy) {
         if (dragging != null) {
-            // No need to track dragOffset — just add the delta directly
             dragging.setXY(
-                    (int) (dragging.getX() + dx),
-                    (int) (dragging.getY() + dy)
+                    (int) (event.x() - dragOffsetX),
+                    (int) (event.y() - dragOffsetY)
             );
             return true;
         }
@@ -72,11 +81,15 @@ public class HudEditorScreen extends Screen {
         int x = element.getX() - 2;
         int y = element.getY() - 2;
         int w = element.getWidth() + 4;
-        int h = element.getHeight() + 4;
-        // top, bottom, left, right
-        graphics.fill(x, y, x + w, y + 1, color);
-        graphics.fill(x, y + h, x + w, y + h + 1, color);
+        int h = element.getHeight() + 2;
+
+        // Top line
+        graphics.fill(x + 1, y, x + w, y + 1, color);
+        // Bottom line
+        graphics.fill(x, y + h, x + w + 1, y + h + 1, color);
+        // Left line
         graphics.fill(x, y, x + 1, y + h, color);
+        // Right line
         graphics.fill(x + w, y, x + w + 1, y + h, color);
     }
 

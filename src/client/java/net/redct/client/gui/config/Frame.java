@@ -77,7 +77,6 @@ public class Frame {
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        // 1. Check Header Dragging
         if (isHovering(mouseX, mouseY, x, y, width, height) && button == 0) {
             this.isDragging = true;
             this.dragX = (int) (mouseX - this.x);
@@ -87,42 +86,72 @@ public class Frame {
 
         int moduleY = this.y + this.height;
         for (Module module : modules) {
-            // 2. Check Module Clicks
             if (isHovering(mouseX, mouseY, x, moduleY, width, moduleHeight)) {
-                if (button == 0) {
-                    module.toggle(); // Left click = Toggle
-                } else if (button == 1) {
-                    module.toggleExpanded(); // Right click = Expand Settings
-                }
+                if (button == 0) module.toggle();           // Left Click
+                if (button == 1) module.toggleExpanded();   // Right Click
                 return true;
             }
 
-            // 3. Check Setting Clicks (if expanded)
             if (module.isExpanded()) {
                 for (Setting setting : module.getSettings()) {
-                    moduleY += moduleHeight; // Move down for the setting
+                    moduleY += moduleHeight;
 
                     if (isHovering(mouseX, mouseY, x, moduleY, width, moduleHeight)) {
                         if (button == 0) {
                             if (setting instanceof ToggleSetting toggle) {
-                                toggle.setValue(!toggle.getValue()); // Or toggle.toggle() if you have that method
+                                toggle.setValue(!toggle.getValue());
                                 return true;
+
                             } else if (setting instanceof SliderSetting slider) {
-                                // Slider logic goes here!
+                                // 1. Start the drag!
+                                slider.setDragging(true);
+                                // 2. Instantly update the value to where the user clicked
+                                updateSliderMath(slider, mouseX);
                                 return true;
                             }
                         }
                     }
                 }
             }
-            moduleY += moduleHeight; // Move down for the next module
+            moduleY += moduleHeight;
         }
         return false;
     }
 
+    public void mouseDragged(double mouseX, double mouseY, int button) {
+        for (Module module : modules) {
+            if (module.isExpanded()) {
+                for (Setting setting : module.getSettings()) {
+                    // If a slider is currently being dragged, aggressively update its value
+                    if (setting instanceof SliderSetting slider && slider.isDragging()) {
+                        updateSliderMath(slider, mouseX);
+                    }
+                }
+            }
+        }
+    }
+
+    private void updateSliderMath(SliderSetting slider, double mouseX) {
+        double percent = (mouseX - (this.x + 4)) / (double) (this.width - 4);
+        percent = Math.clamp(percent, 0.0, 1.0);
+        double newValue = slider.getMin() + (percent * (slider.getMax() - slider.getMin()));
+        slider.setValue(newValue);
+    }
+
     public void mouseReleased(double mouseX, double mouseY, int button) {
         if (button == 0) {
-            this.isDragging = false;
+            this.isDragging = false; // Stops frame dragging
+
+            // Turn off dragging for ALL sliders inside this frame
+            for (Module module : modules) {
+                if (module.isExpanded()) {
+                    for (Setting setting : module.getSettings()) {
+                        if (setting instanceof SliderSetting slider) {
+                            slider.setDragging(false);
+                        }
+                    }
+                }
+            }
         }
     }
 
