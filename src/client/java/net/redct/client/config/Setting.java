@@ -12,9 +12,10 @@ public abstract class Setting {
         this.name = name;
     }
 
-    public Setting visibleWhen(BooleanSupplier condition) {
+    @SuppressWarnings("unchecked")
+    public <T extends Setting> T visibleWhen(BooleanSupplier condition) {
         this.visibilityCondition = condition;
-        return this;
+        return (T) this;
     }
 
     public boolean isVisible() {

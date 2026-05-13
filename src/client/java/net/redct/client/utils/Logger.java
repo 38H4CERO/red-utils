@@ -35,4 +35,8 @@ public class Logger {
         log(tag, String.format(format, args));
     }
 
+    public static void log() {
+        log("LOG", "Im running");
+    }
+
 }

@@ -1,6 +1,5 @@
 package net.redct.client.gui.hud;
 
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public interface HudInterface {
@@ -10,7 +9,9 @@ public interface HudInterface {
     float getScale();
     void setXY(int x, int y);
     void setScale(float scale);
-    void render(GuiGraphicsExtractor graphics, DeltaTracker tickCounter);
+    void render(GuiGraphicsExtractor graphics);
+    boolean isVisible();
+    void setVisible(boolean visible);
     int getWidth();
     int getHeight();
 }

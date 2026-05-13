@@ -20,8 +20,9 @@ public class RedUtilsClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		LOGGER.info("Initializing Red Utils");
 		log("INFO","Initializing Red Utils");
+		// Order matters
+		HudManager.init();
 		ModuleManager.init();
-		//HudManager.init();
 		ConfigManager.load();
 		EventSubscriber.registerToEvents();
 		ModCommands.register();

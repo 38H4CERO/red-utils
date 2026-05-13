@@ -1,6 +1,9 @@
 package net.redct.client.module.impl;
 
 import net.redct.client.config.SliderSetting;
+import net.redct.client.config.ToggleSetting;
+import net.redct.client.gui.hud.GuiTextUtils;
+import net.redct.client.gui.hud.HudManager;
 import net.redct.client.module.Category;
 import net.redct.client.module.Module;
 import net.redct.client.utils.DungeonSession;
@@ -11,15 +14,29 @@ import static net.redct.client.utils.DungeonUtils.*;
 
 
 public class DungeonClearAlert extends Module {
-    public final SliderSetting volume = new SliderSetting("volume", "Volume", 100, 0, 100);
-    public final SliderSetting volume2 = new SliderSetting("volume2", "Volume", 100, 0, 100);
+    public final ToggleSetting makeSound = new ToggleSetting("makeSound", "Sound", true);
+    public final SliderSetting volume = new SliderSetting("volume", "Volume", 100, 0, 100)
+            .visibleWhen(makeSound::getValue);
+    public GuiTextUtils guiText = new GuiTextUtils("dungeonAlert",4,12, 1.2f);
+
 
     public DungeonClearAlert(){
         super("dungeonClearAlert","Clear alert", Category.DUNGEONS);
+        guiText.setText("Dungeon Clear Enabled");
+        HudManager.register(guiText, this);
+        registerSetting(makeSound);
         registerSetting(volume);
-        registerSetting(volume2);
     }
 
+    @Override
+    public void onEnable() {
+        guiText.setVisible(true);
+    }
+
+    @Override
+    public void onDisable() {
+        guiText.setVisible(false);
+    }
 
 
     public static void getMapData(byte[] mapColors, int playerX, int playerY){

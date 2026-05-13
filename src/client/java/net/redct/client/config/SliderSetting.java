@@ -3,7 +3,7 @@ package net.redct.client.config;
 public class SliderSetting extends Setting {
     private double value;
     private final double min, max;
-    private boolean dragging; // <--- NEW
+    private boolean dragging;
 
     public SliderSetting(String id, String name, double defaultValue, double min, double max) {
         super(id, name);

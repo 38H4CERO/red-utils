@@ -10,11 +10,12 @@ import net.minecraft.network.chat.Component;
 
 public class GuiTextUtils implements HudInterface {
     private String id;
+    private boolean isVisible = true;
     private float scale = 1.0f;
     private int x = 0;
     private int y = 0;
     private int color = 0xFFFFFFFF;
-    private String text = "";
+    private String text;
 
     public GuiTextUtils(String id, int x, int y, float scale) {
         this.id = id;
@@ -52,6 +53,7 @@ public class GuiTextUtils implements HudInterface {
     @Override public float getScale() { return scale; }
     @Override public void setXY(int x, int y) { this.x = x; this.y = y;}
     @Override public void setScale(float scale) { this.scale = scale; }
+
     @Override
     public int getWidth() {
         Font font = Minecraft.getInstance().font;
@@ -64,9 +66,10 @@ public class GuiTextUtils implements HudInterface {
         return (int)(9 * scale); // minecraft font height is always 9
     }
 
-
     @Override
-    public void render(GuiGraphicsExtractor graphics, DeltaTracker tickCounter) {
+    public void render(GuiGraphicsExtractor graphics) {
+        if (text == null || text.isEmpty()) return;
+
         // TODO: crear un GUIManager y inicializar font alli
         Font font = Minecraft.getInstance().font;
 
@@ -83,6 +86,16 @@ public class GuiTextUtils implements HudInterface {
         } else {
             graphics.text(font, text, x, y, color);
         }
+    }
+
+    @Override
+    public boolean isVisible() {
+        return isVisible;
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        this.isVisible = visible;
     }
 
     public static void sendTitle(String title, String subtitle) {

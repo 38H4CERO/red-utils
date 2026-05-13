@@ -1,8 +1,10 @@
 package net.redct.client;
 
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.redct.client.module.Module;
+import net.redct.client.module.ModuleManager;
 import net.redct.client.utils.DungeonSession;
-import net.redct.client.utils.DungeonUtils;
 import net.redct.client.utils.Utils;
 
 public class EventSubscriber {
@@ -10,6 +12,7 @@ public class EventSubscriber {
     public static void registerToEvents(){
         onServerConnectEVENT();
         onServerDisconnectEVENT();
+        onTickEVENT();
     }
 
     private static void onServerConnectEVENT() {
@@ -22,6 +25,16 @@ public class EventSubscriber {
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
             Utils.inHypixel = false;
             DungeonSession.end();
+        });
+    }
+
+    private static void onTickEVENT(){
+        ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            for (Module module : ModuleManager.getModules()) {
+                if (module.isEnabled()) {
+                    module.onTick();
+                }
+            }
         });
     }
 }

@@ -1,6 +1,7 @@
 package net.redct.client.module.impl;
 
 import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 import net.redct.client.gui.hud.GuiTextUtils;
@@ -10,40 +11,36 @@ import net.redct.client.module.Module;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 
 import static net.redct.client.RedUtilsClient.MOD_ID;
+import static net.redct.client.utils.Logger.log;
 
 public class ExampleTextRender extends Module{
     public GuiTextUtils guiText = new GuiTextUtils("coords",4,12, 1.2f);
 
     public ExampleTextRender(){
         super("example_text","Example Text Render", Category.MISC);
-        HudElementRegistry.addFirst(Identifier.fromNamespaceAndPath(MOD_ID, "coordinates_overlay"), this::render);
-        HudManager.register(guiText); // register so HudEditorScreen can see and move it
+        HudManager.register(guiText, this); // register so HudEditorScreen can see and move it
     }
 
-    // TODO
     @Override
     public void onEnable() {
-
+        guiText.setVisible(true);
     }
 
     @Override
     public void onDisable() {
+        guiText.setVisible(false);
     }
 
-
-    private void render(GuiGraphicsExtractor graphics, DeltaTracker tickCounter) {
-        if (!this.isEnabled()) return;  // Hide when disabled
-
-        var mc = net.minecraft.client.Minecraft.getInstance();
-        if (mc.player == null) return;
-
-        double x = mc.player.xo;
-        double y = mc.player.yo;
-        double z = mc.player.zo;
-
-        guiText.setText(String.format("XYZ: %.1f / %.1f / %.1f", x, y, z));
-        guiText.render(graphics, tickCounter);
-
-
+    @Override
+    public void onTick(){
+        if (!isEnabled()) return;
+        var mc = Minecraft.getInstance();
+        if (mc.player == null) {
+            guiText.setText(null);
+            return;
+        }
+        guiText.setText(String.format("XYZ: %.1f / %.1f / %.1f",
+                mc.player.xo, mc.player.yo, mc.player.zo));
     }
+
 }

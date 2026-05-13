@@ -56,6 +56,7 @@ public class Frame {
 
             if (module.isExpanded()) {
                 for (Setting setting : module.getSettings()) {
+                    if (!setting.isVisible()) continue;
                     moduleY += moduleHeight;
 
                     if (setting instanceof ToggleSetting toggle) {
@@ -158,4 +159,5 @@ public class Frame {
     private boolean isHovering(double mouseX, double mouseY, int x, int y, int width, int height) {
         return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
     }
+
 }
