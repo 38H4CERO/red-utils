@@ -8,6 +8,7 @@ import net.redct.client.module.Category;
 import net.redct.client.module.Module;
 import net.redct.client.module.ModuleManager;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.redct.client.utils.GuiUtils;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class Frame {
     public int dragX, dragY;
     public Category category;
     public boolean isDragging;
+    private SliderSetting activeSlider = null;
 
     private final List<Module> modules;
 
@@ -43,7 +45,7 @@ public class Frame {
         // 3. Draw Modules
         int moduleY = this.y + this.height;
         for (Module module : modules) {
-            boolean hovering = isHovering(mouseX, mouseY, x, moduleY, width, moduleHeight);
+            boolean hovering = GuiUtils.contains(mouseX, mouseY, x, moduleY, width, moduleHeight);
 
             // Background color logic
             int bgColor = module.isEnabled() ? 0xFF2E7D32 : (hovering ? 0xFF333333 : 0xFF1A1A1A);
@@ -78,7 +80,7 @@ public class Frame {
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (isHovering(mouseX, mouseY, x, y, width, height) && button == 0) {
+        if (GuiUtils.contains(mouseX, mouseY, x, y, width, height) && button == 0) {
             this.isDragging = true;
             this.dragX = (int) (mouseX - this.x);
             this.dragY = (int) (mouseY - this.y);
@@ -87,7 +89,7 @@ public class Frame {
 
         int moduleY = this.y + this.height;
         for (Module module : modules) {
-            if (isHovering(mouseX, mouseY, x, moduleY, width, moduleHeight)) {
+            if (GuiUtils.contains(mouseX, mouseY, x, moduleY, width, moduleHeight)) {
                 if (button == 0) module.toggle();           // Left Click
                 if (button == 1) module.toggleExpanded();   // Right Click
                 return true;
@@ -95,9 +97,10 @@ public class Frame {
 
             if (module.isExpanded()) {
                 for (Setting setting : module.getSettings()) {
+                    if (!setting.isVisible()) continue;
                     moduleY += moduleHeight;
 
-                    if (isHovering(mouseX, mouseY, x, moduleY, width, moduleHeight)) {
+                    if (GuiUtils.contains(mouseX, mouseY, x, moduleY, width, moduleHeight)) {
                         if (button == 0) {
                             if (setting instanceof ToggleSetting toggle) {
                                 toggle.setValue(!toggle.getValue());
@@ -156,8 +159,6 @@ public class Frame {
         }
     }
 
-    private boolean isHovering(double mouseX, double mouseY, int x, int y, int width, int height) {
-        return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
-    }
+
 
 }

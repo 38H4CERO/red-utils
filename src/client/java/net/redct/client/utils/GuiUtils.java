@@ -1,13 +1,18 @@
 package net.redct.client.utils;
 
-// TODO: Move repeated logic here, revise isHovered math
 public class GuiUtils {
+    public static boolean contains(double mouseX, double mouseY, int x, int y, int width, int height) {
+        return mouseX >= x && mouseX <= x + width
+                && mouseY > y && mouseY < y + height;
+    }
 
-    // Maybe implement this
-    public interface IClickable {
-        int getX();
-        int getY();
-        int getWidth();
-        int getHeight();
+    public record Rect(int x, int y, int width, int height) {
+        public boolean contains(double mouseX, double mouseY) {
+            return GuiUtils.contains(mouseX, mouseY, x, y, width, height);
+        }
+
+        public Rect withPadding(int pad) {
+            return new Rect(x - pad, y - pad, width + pad * 2, height + pad * 2);
+        }
     }
 }

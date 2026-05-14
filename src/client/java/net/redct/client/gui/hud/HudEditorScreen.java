@@ -11,7 +11,7 @@ import net.redct.client.module.Module;
 import java.util.List;
 
 public class HudEditorScreen extends Screen {
-    private HudInterface currentRect = null;
+    private HudInterface element = null;
     private int dragOffsetX = 0;
     private int dragOffsetY = 0;
 
@@ -40,7 +40,7 @@ public class HudEditorScreen extends Screen {
             Module module = HudManager.getModule(element);
             if (module != null && !module.isEnabled()) continue;
             element.render(graphics);
-            boolean hovering = isHovering(mouseX, mouseY, element);
+            boolean hovering = element.getRect().withPadding(3).contains(mouseX, mouseY);
             int borderColor = hovering ? 0xFFFFFFFF : 0x88AAAAAA;
             drawBorder(graphics, element, borderColor);
         }
@@ -53,9 +53,9 @@ public class HudEditorScreen extends Screen {
         for (int i = elements.size() - 1; i >= 0; i--) {
             HudInterface element = elements.get(i);
 
-            if (isHovering(event.x(), event.y(), element)) {
+            if (element.getRect().withPadding(3).contains(event.x(), event.y())) {
                 HudManager.bringToFront(element); // bring to front
-                currentRect = element;
+                this.element = element;
                 // Record exactly where on the element the mouse grabbed it
                 dragOffsetX = (int) (event.x() - element.getX());
                 dragOffsetY = (int) (event.y() - element.getY());
@@ -67,8 +67,8 @@ public class HudEditorScreen extends Screen {
 
     @Override
     public boolean mouseDragged(MouseButtonEvent event, double dx, double dy) {
-        if (currentRect != null) {
-            currentRect.setXY(
+        if (element != null) {
+            element.setXY(
                     (int) (event.x() - dragOffsetX),
                     (int) (event.y() - dragOffsetY)
             );
@@ -79,24 +79,18 @@ public class HudEditorScreen extends Screen {
 
     @Override
     public boolean mouseReleased(MouseButtonEvent event) {
-        if (currentRect != null) {
-            currentRect = null;
+        if (element != null) {
+            element = null;
             ConfigManager.save(); // persist new position
             return true;
         }
         return super.mouseReleased(event);
     }
 
-    private boolean isHovering(double mouseX, double mouseY, HudInterface element) {
-        int pad = 3;
-        return mouseX >= element.getX() - pad && mouseX <= element.getX() + pad + element.getWidth()
-                && mouseY >= element.getY() - pad && mouseY <= element.getY() + pad + element.getHeight();
-    }
-
     private void drawBorder(GuiGraphicsExtractor graphics, HudInterface element, int color) {
         int x = element.getX() - 2;
         int y = element.getY() - 2;
-        int w = element.getWidth() + 4;
+        int w = element.getWidth() + 2;
         int h = element.getHeight() + 2;
 
         // Top line
@@ -114,7 +108,7 @@ public class HudEditorScreen extends Screen {
         List<HudInterface> elements = HudManager.getElements();
         for (int i = elements.size() - 1; i >= 0; i--) {
             HudInterface element = elements.get(i);
-            if (isHovering(mouseX, mouseY, element)) {
+            if (element.getRect().withPadding(3).contains(mouseX, mouseY)) {
                 float newScale = element.getScale() + (float) scrollY * 0.1f;
                 newScale = Math.round(newScale * 10) / 10f;
                 element.setScale(Math.max(0.1f, newScale));
@@ -127,13 +121,13 @@ public class HudEditorScreen extends Screen {
     // TODO: Only works while mouse is pressed, refactor all to make it work
     @Override
     public boolean keyPressed(KeyEvent event) {
-        if (currentRect != null) {
+        if (element != null) {
             int amount = event.hasShiftDown() ? 10 : 1;
 
-            if (event.isLeft())  { currentRect.setXY(currentRect.getX() - amount, currentRect.getY()); return true; }
-            if (event.isRight()) { currentRect.setXY(currentRect.getX() + amount, currentRect.getY()); return true; }
-            if (event.isUp())    { currentRect.setXY(currentRect.getX(), currentRect.getY() - amount); return true; }
-            if (event.isDown())  { currentRect.setXY(currentRect.getX(), currentRect.getY() + amount); return true; }
+            if (event.isLeft())  { element.setXY(element.getX() - amount, element.getY()); return true; }
+            if (event.isRight()) { element.setXY(element.getX() + amount, element.getY()); return true; }
+            if (event.isUp())    { element.setXY(element.getX(), element.getY() - amount); return true; }
+            if (event.isDown())  { element.setXY(element.getX(), element.getY() + amount); return true; }
         }
         return super.keyPressed(event);
     }

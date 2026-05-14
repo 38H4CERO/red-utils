@@ -1,6 +1,7 @@
 package net.redct.client.gui.hud;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.redct.client.utils.GuiUtils;
 
 public interface HudInterface {
     String getId();
@@ -14,4 +15,8 @@ public interface HudInterface {
     void setVisible(boolean visible);
     int getWidth();
     int getHeight();
+
+    default GuiUtils.Rect getRect() {
+        return new GuiUtils.Rect(getX(), getY(), getWidth(), getHeight());
+    }
 }
