@@ -6,6 +6,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 import net.redct.client.module.Module;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static net.redct.client.RedUtilsClient.MOD_ID;
@@ -13,8 +14,10 @@ import static net.redct.client.RedUtilsClient.MOD_ID;
 public class HudManager {
     private static boolean isEditorOpen = false;
     private record HudEntry(HudInterface element, Module module) {}
-
     private static final List<HudEntry> entries = new ArrayList<>();
+    private static final List<HudInterface> elements = new ArrayList<>();
+    private static final List<HudInterface> elementsView = Collections.unmodifiableList(elements);
+
 
     public static void init() {
         HudElementRegistry.addFirst(
@@ -25,6 +28,7 @@ public class HudManager {
 
     public static void register(HudInterface element, Module module) {
         entries.add(new HudEntry(element, module));
+        elements.add(element);
     }
 
     public static Module getModule(HudInterface element) {
@@ -45,9 +49,7 @@ public class HudManager {
     }
 
     public static List<HudInterface> getElements() {
-        return entries.stream()
-                .map(HudEntry::element)
-                .toList();
+        return elementsView;
     }
 
     public static HudInterface getById(String id) {

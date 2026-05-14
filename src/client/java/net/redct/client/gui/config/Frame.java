@@ -1,6 +1,7 @@
 package net.redct.client.gui.config;
 
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.input.KeyEvent;
 import net.redct.client.config.Setting;
 import net.redct.client.config.SliderSetting;
 import net.redct.client.config.ToggleSetting;
@@ -19,6 +20,7 @@ public class Frame {
     public Category category;
     public boolean isDragging;
     private SliderSetting activeSlider = null;
+    private SliderSetting lastSlider = null;
 
     private final List<Module> modules;
 
@@ -107,9 +109,8 @@ public class Frame {
                                 return true;
 
                             } else if (setting instanceof SliderSetting slider) {
-                                // 1. Start the drag!
-                                slider.setDragging(true);
-                                // 2. Instantly update the value to where the user clicked
+                                activeSlider = slider;
+                                lastSlider = slider;
                                 updateSliderMath(slider, mouseX);
                                 return true;
                             }
@@ -123,15 +124,8 @@ public class Frame {
     }
 
     public void mouseDragged(double mouseX, double mouseY, int button) {
-        for (Module module : modules) {
-            if (module.isExpanded()) {
-                for (Setting setting : module.getSettings()) {
-                    // If a slider is currently being dragged, aggressively update its value
-                    if (setting instanceof SliderSetting slider && slider.isDragging()) {
-                        updateSliderMath(slider, mouseX);
-                    }
-                }
-            }
+        if (activeSlider != null) {
+            updateSliderMath(activeSlider, mouseX);
         }
     }
 
@@ -144,21 +138,21 @@ public class Frame {
 
     public void mouseReleased(double mouseX, double mouseY, int button) {
         if (button == 0) {
-            this.isDragging = false; // Stops frame dragging
+            this.isDragging = false;
 
-            // Turn off dragging for ALL sliders inside this frame
-            for (Module module : modules) {
-                if (module.isExpanded()) {
-                    for (Setting setting : module.getSettings()) {
-                        if (setting instanceof SliderSetting slider) {
-                            slider.setDragging(false);
-                        }
-                    }
-                }
+            if (activeSlider != null) {
+                activeSlider = null;
             }
         }
     }
 
-
+    // TODO: Habria que moverlo a ClickGui sino mueves en varios frames a la vez
+    public boolean keyPressed(KeyEvent event) {
+        if (lastSlider == null) return false;
+        double amount = event.hasShiftDown() ? 1.0 : 0.1;
+        if (event.isLeft())  { lastSlider.setValue(lastSlider.getValue() - amount); return true; }
+        if (event.isRight()) { lastSlider.setValue(lastSlider.getValue() + amount); return true; }
+        return false;
+    }
 
 }

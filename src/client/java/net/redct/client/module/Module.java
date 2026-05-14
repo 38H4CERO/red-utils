@@ -16,6 +16,7 @@ public abstract class Module {
     private boolean enabled = false;
     private boolean expanded = false;
     private final List<Setting> settings = new ArrayList<>();
+    private final List<Setting> settingsView = Collections.unmodifiableList(settings);
 
     public Module(String id, String name, Category category) {
         this.name = name;
@@ -29,7 +30,7 @@ public abstract class Module {
     }
 
     public List<Setting> getSettings() {
-        return Collections.unmodifiableList(settings);
+        return settingsView;
     }
 
     public boolean hasSettings() {

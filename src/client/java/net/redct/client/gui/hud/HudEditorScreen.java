@@ -12,8 +12,11 @@ import java.util.List;
 
 public class HudEditorScreen extends Screen {
     private HudInterface element = null;
+    private HudInterface lastElement = null;
+    private final int BORDER_PADDING = 3;
     private int dragOffsetX = 0;
     private int dragOffsetY = 0;
+    private final GuiTextUtils rectPosition = new GuiTextUtils("rectPosition");
 
     public HudEditorScreen() {
         super(Component.literal("HUD Editor"));
@@ -22,6 +25,7 @@ public class HudEditorScreen extends Screen {
     @Override
     public void init() {
         HudManager.setEditorOpen(true);
+        rectPosition.setColor(0xC0C0C0, 0xFF);
     }
 
     @Override
@@ -43,6 +47,17 @@ public class HudEditorScreen extends Screen {
             boolean hovering = element.getRect().withPadding(3).contains(mouseX, mouseY);
             int borderColor = hovering ? 0xFFFFFFFF : 0x88AAAAAA;
             drawBorder(graphics, element, borderColor);
+
+        }
+        if (lastElement != null) {
+            String info = String.format("[%d, %d] x%.1f",
+                    lastElement.getX() + BORDER_PADDING, lastElement.getY() + BORDER_PADDING, lastElement.getScale());
+            rectPosition.setText(info);
+            // below the border
+            int textX = lastElement.getX();
+            int textY = lastElement.getY() + lastElement.getHeight() + 4;
+            rectPosition.setXY(textX, textY);
+            rectPosition.render(graphics);
         }
     }
 
@@ -53,9 +68,10 @@ public class HudEditorScreen extends Screen {
         for (int i = elements.size() - 1; i >= 0; i--) {
             HudInterface element = elements.get(i);
 
-            if (element.getRect().withPadding(3).contains(event.x(), event.y())) {
+            if (element.getRect().withPadding(BORDER_PADDING).contains(event.x(), event.y())) {
                 HudManager.bringToFront(element); // bring to front
                 this.element = element;
+                this.lastElement = element;
                 // Record exactly where on the element the mouse grabbed it
                 dragOffsetX = (int) (event.x() - element.getX());
                 dragOffsetY = (int) (event.y() - element.getY());
@@ -88,10 +104,10 @@ public class HudEditorScreen extends Screen {
     }
 
     private void drawBorder(GuiGraphicsExtractor graphics, HudInterface element, int color) {
-        int x = element.getX() - 2;
-        int y = element.getY() - 2;
-        int w = element.getWidth() + 2;
-        int h = element.getHeight() + 2;
+        int x = element.getX() - BORDER_PADDING + 1;
+        int y = element.getY() - BORDER_PADDING + 1 ;
+        int w = element.getWidth() + BORDER_PADDING - 1;
+        int h = element.getHeight() + BORDER_PADDING - 1;
 
         // Top line
         graphics.fill(x + 1, y, x + w, y + 1, color);
@@ -118,16 +134,15 @@ public class HudEditorScreen extends Screen {
         return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 
-    // TODO: Only works while mouse is pressed, refactor all to make it work
     @Override
     public boolean keyPressed(KeyEvent event) {
-        if (element != null) {
+        if (lastElement != null) {
             int amount = event.hasShiftDown() ? 10 : 1;
 
-            if (event.isLeft())  { element.setXY(element.getX() - amount, element.getY()); return true; }
-            if (event.isRight()) { element.setXY(element.getX() + amount, element.getY()); return true; }
-            if (event.isUp())    { element.setXY(element.getX(), element.getY() - amount); return true; }
-            if (event.isDown())  { element.setXY(element.getX(), element.getY() + amount); return true; }
+            if (event.isLeft())  { lastElement.setXY(lastElement.getX() - amount, lastElement.getY()); return true; }
+            if (event.isRight()) { lastElement.setXY(lastElement.getX() + amount, lastElement.getY()); return true; }
+            if (event.isUp())    { lastElement.setXY(lastElement.getX(), lastElement.getY() - amount); return true; }
+            if (event.isDown())  { lastElement.setXY(lastElement.getX(), lastElement.getY() + amount); return true; }
         }
         return super.keyPressed(event);
     }

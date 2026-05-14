@@ -14,6 +14,7 @@ public class DungeonSession {
     private final boolean isMasterMode;
     private final int floor;
     private final List<DungeonUtils.Room> rooms = new ArrayList<>();
+    private final List<DungeonUtils.Room> roomsView = Collections.unmodifiableList(rooms);
     private boolean isDataInitialized = false;
 
     // Sizes
@@ -97,7 +98,6 @@ public class DungeonSession {
     }
 
     public List<DungeonUtils.Room> getRooms() {
-        // Inmutable list
-        return Collections.unmodifiableList(rooms);
+        return roomsView;
     }
 }

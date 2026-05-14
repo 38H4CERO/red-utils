@@ -98,6 +98,16 @@ public class GuiTextUtils implements HudInterface {
         this.isVisible = visible;
     }
 
+    /**
+     *
+     * @param RGB 0xFFFFFF white
+     * @param alpha 0-255, 0xFF for opaque
+     */
+    public void setColor(int RGB, int alpha) {
+        this.color = ((alpha & 0xFF) << 24) | (RGB & 0x00FFFFFF);
+    }
+
+
     public static void sendTitle(String title, String subtitle) {
         Minecraft client = Minecraft.getInstance();
         if (client.player == null) return;
