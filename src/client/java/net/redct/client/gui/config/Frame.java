@@ -2,6 +2,7 @@ package net.redct.client.gui.config;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.input.KeyEvent;
+import net.redct.client.config.ColorSetting;
 import net.redct.client.config.Setting;
 import net.redct.client.config.SliderSetting;
 import net.redct.client.config.ToggleSetting;
@@ -12,6 +13,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.redct.client.utils.GuiUtils;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class Frame {
     public int x, y, width, height;
@@ -23,38 +25,32 @@ public class Frame {
     private SliderSetting lastSlider = null;
 
     private final List<Module> modules;
+    private final Consumer<ColorSetting> onColorPickerOpen;
 
-    public Frame(Category category, int x, int y){
+    public Frame(Category category, int x, int y, Consumer<ColorSetting> onColorPickerOpen) {
         this.category = category;
         this.x = x;
         this.y = y;
         this.width = 100;
-        this.height = 18; // The height of the header bar
+        this.height = 18;
         this.modules = ModuleManager.getByCategory(category);
+        this.onColorPickerOpen = onColorPickerOpen;
     }
 
     public void extractRenderState(GuiGraphicsExtractor graphics, Font font, int mouseX, int mouseY, float a) {
-        // 1. Dragging math
         if (isDragging) {
             this.x = mouseX - this.dragX;
             this.y = mouseY - this.dragY;
         }
 
-        // 2. Draw Header
         graphics.fill(x, y, x + width, y + height, 0xFF222222);
         graphics.text(font, category.name(), x + 4, y + 4, 0xFFFFFFFF);
 
-        // 3. Draw Modules
         int moduleY = this.y + this.height;
         for (Module module : modules) {
             boolean hovering = GuiUtils.contains(mouseX, mouseY, x, moduleY, width, moduleHeight);
-
-            // Background color logic
             int bgColor = module.isEnabled() ? 0xFF2E7D32 : (hovering ? 0xFF333333 : 0xFF1A1A1A);
-
             graphics.fill(x, moduleY, x + width, moduleY + moduleHeight, bgColor);
-
-            // Text color logic
             int textColor = module.isEnabled() ? 0xFFFFFFFF : 0xFFAAAAAA;
             graphics.text(font, module.getName(), x + 4, moduleY + 4, textColor);
 
@@ -70,10 +66,16 @@ public class Frame {
 
                     } else if (setting instanceof SliderSetting slider) {
                         graphics.fill(x + 4, moduleY, x + width, moduleY + moduleHeight, 0xFF111111);
-                        // Draw filled portion
                         int filledWidth = (int) ((slider.getValue() - slider.getMin()) / (slider.getMax() - slider.getMin()) * (width - 4));
                         graphics.fill(x + 4, moduleY, x + 4 + filledWidth, moduleY + moduleHeight, 0xFF1565C0);
                         graphics.text(font, setting.getName() + ": " + (int) slider.getValue(), x + 8, moduleY + 4, 0xFFCCCCCC);
+
+                    } else if (setting instanceof ColorSetting colorSetting) {
+                        graphics.fill(x + 4, moduleY, x + width, moduleY + moduleHeight, 0xFF111111);
+                        graphics.text(font, setting.getName(), x + 8, moduleY + 4, 0xFFCCCCCC);
+                        // Color preview box on the right
+                        graphics.fill(x + width - 14, moduleY + 2, x + width - 2, moduleY + moduleHeight - 2, colorSetting.getColor());
+                        graphics.outline(x + width - 14, moduleY + 2, 12, moduleHeight - 4, 0xFF444444);
                     }
                 }
             }
@@ -92,8 +94,8 @@ public class Frame {
         int moduleY = this.y + this.height;
         for (Module module : modules) {
             if (GuiUtils.contains(mouseX, mouseY, x, moduleY, width, moduleHeight)) {
-                if (button == 0) module.toggle();           // Left Click
-                if (button == 1) module.toggleExpanded();   // Right Click
+                if (button == 0) module.toggle();
+                if (button == 1) module.toggleExpanded();
                 return true;
             }
 
@@ -112,6 +114,10 @@ public class Frame {
                                 activeSlider = slider;
                                 lastSlider = slider;
                                 updateSliderMath(slider, mouseX);
+                                return true;
+
+                            } else if (setting instanceof ColorSetting colorSetting) {
+                                onColorPickerOpen.accept(colorSetting);
                                 return true;
                             }
                         }
@@ -139,10 +145,7 @@ public class Frame {
     public void mouseReleased(double mouseX, double mouseY, int button) {
         if (button == 0) {
             this.isDragging = false;
-
-            if (activeSlider != null) {
-                activeSlider = null;
-            }
+            activeSlider = null;
         }
     }
 
@@ -154,5 +157,4 @@ public class Frame {
         if (event.isRight()) { lastSlider.setValue(lastSlider.getValue() + amount); return true; }
         return false;
     }
-
 }

@@ -49,9 +49,12 @@ public class HudEditorScreen extends Screen {
             drawBorder(graphics, element, borderColor);
 
         }
+
+        // Little coordinates below gui
+        // TODO: view why is BORDER_PADDING + 1
         if (lastElement != null) {
             String info = String.format("[%d, %d] x%.1f",
-                    lastElement.getX() + BORDER_PADDING, lastElement.getY() + BORDER_PADDING, lastElement.getScale());
+                    lastElement.getX() - BORDER_PADDING, lastElement.getY() - BORDER_PADDING + 1, lastElement.getScale());
             rectPosition.setText(info);
             // below the border
             int textX = lastElement.getX();
@@ -106,9 +109,11 @@ public class HudEditorScreen extends Screen {
     private void drawBorder(GuiGraphicsExtractor graphics, HudInterface element, int color) {
         int x = element.getX() - BORDER_PADDING + 1;
         int y = element.getY() - BORDER_PADDING + 1 ;
-        int w = element.getWidth() + BORDER_PADDING - 1;
-        int h = element.getHeight() + BORDER_PADDING - 1;
+        int w = element.getWidth() + BORDER_PADDING + 1;
+        int h = element.getHeight() + BORDER_PADDING + 1;
 
+        graphics.outline(x, y, w, h, color);
+        /*
         // Top line
         graphics.fill(x + 1, y, x + w, y + 1, color);
         // Bottom line
@@ -117,7 +122,9 @@ public class HudEditorScreen extends Screen {
         graphics.fill(x, y, x + 1, y + h, color);
         // Right line
         graphics.fill(x + w, y, x + w + 1, y + h, color);
+        */
     }
+
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {

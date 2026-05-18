@@ -1,5 +1,6 @@
 package net.redct.client.module.impl;
 
+import net.redct.client.config.ColorSetting;
 import net.redct.client.config.SliderSetting;
 import net.redct.client.config.ToggleSetting;
 import net.redct.client.gui.hud.GuiTextUtils;
@@ -17,6 +18,7 @@ public class DungeonClearAlert extends Module {
     public final ToggleSetting makeSound = new ToggleSetting("makeSound", "Sound", true);
     public final SliderSetting volume = new SliderSetting("volume", "Volume", 100, 0, 100)
             .visibleWhen(makeSound::getValue);
+    public final ColorSetting color = new ColorSetting("color", "Color", 0xFFFFFFFF);
     public GuiTextUtils guiText = new GuiTextUtils("dungeonAlert",4,12, 1.2f);
 
 
@@ -26,6 +28,7 @@ public class DungeonClearAlert extends Module {
         HudManager.register(guiText, this);
         registerSetting(makeSound);
         registerSetting(volume);
+        registerSetting(color);
     }
 
     @Override
