@@ -66,5 +66,4 @@ public abstract class Module {
     public void onEnable() {}
     public void onDisable() {}
     public void onTick() {}
-    public void onRender(GuiGraphicsExtractor graphics, Font font) {}
 }

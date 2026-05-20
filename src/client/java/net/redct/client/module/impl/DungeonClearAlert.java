@@ -3,14 +3,14 @@ package net.redct.client.module.impl;
 import net.redct.client.config.ColorSetting;
 import net.redct.client.config.SliderSetting;
 import net.redct.client.config.ToggleSetting;
-import net.redct.client.gui.hud.GuiTextUtils;
+import net.redct.client.utils.GuiTextUtils;
 import net.redct.client.gui.hud.HudManager;
 import net.redct.client.module.Category;
 import net.redct.client.module.Module;
 import net.redct.client.utils.DungeonSession;
 import net.redct.client.utils.Utils;
 
-import static net.redct.client.gui.hud.GuiTextUtils.sendTitle;
+import static net.redct.client.utils.GuiTextUtils.sendTitle;
 import static net.redct.client.utils.DungeonUtils.*;
 
 

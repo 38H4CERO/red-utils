@@ -7,6 +7,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.redct.client.config.ConfigManager;
 import net.redct.client.module.Module;
+import net.redct.client.utils.GuiTextUtils;
 
 import java.util.List;
 

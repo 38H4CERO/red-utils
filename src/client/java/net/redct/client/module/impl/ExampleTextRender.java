@@ -1,16 +1,11 @@
 package net.redct.client.module.impl;
 
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.resources.Identifier;
-import net.redct.client.gui.hud.GuiTextUtils;
+import net.redct.client.utils.GuiTextUtils;
 import net.redct.client.gui.hud.HudManager;
 import net.redct.client.module.Category;
 import net.redct.client.module.Module;
-import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 
-import static net.redct.client.RedUtilsClient.MOD_ID;
 import static net.redct.client.utils.Logger.log;
 
 public class ExampleTextRender extends Module{
