@@ -101,7 +101,6 @@ public class HudEditorScreen extends Screen {
     public boolean mouseReleased(MouseButtonEvent event) {
         if (element != null) {
             element = null;
-            ConfigManager.save(); // persist new position
             return true;
         }
         return super.mouseReleased(event);

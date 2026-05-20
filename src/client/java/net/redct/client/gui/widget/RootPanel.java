@@ -2,11 +2,11 @@ package net.redct.client.gui.widget;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.redct.client.utils.GuiUtils;
 import java.util.ArrayList;
 import java.util.List;
 
 public class RootPanel {
-    // 1. Static instance to allow global access to overlays
     private static RootPanel instance;
 
     public static RootPanel getInstance() {
@@ -33,6 +33,10 @@ public class RootPanel {
         overlays.clear();
     }
 
+    public void overlayPop(){
+        overlays.removeLast();
+    }
+
     public void render(GuiGraphicsExtractor graphics, Font font, int mouseX, int mouseY) {
         content.render(graphics, font, mouseX, mouseY);
         for (Widget overlay : overlays) {
@@ -41,26 +45,45 @@ public class RootPanel {
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        for (int i = overlays.size() - 1; i >= 0; i--) {
-            Widget overlay = overlays.get(i);
-            if (overlay.mouseClicked(mouseX, mouseY, button)) {
-                return true;
+        // 1. If an overlay is open, handle it modally
+        if (!overlays.isEmpty()) {
+            Widget topOverlay = overlays.getLast();
+
+            // Check if the click occurred inside the overlay's bounding box
+            boolean clickedInside = GuiUtils.contains(mouseX, mouseY,
+                    topOverlay.getX(), topOverlay.getY(),
+                    topOverlay.getWidth(), topOverlay.getHeight()
+            );
+
+            if (clickedInside) {
+                topOverlay.mouseClicked(mouseX, mouseY, button);
+            } else if (topOverlay.isDismissible()) {
+                // Only close if the widget allows it!
+
+                overlayPop();
             }
+            return true; // Always return true to consume the click and block background
         }
+
+        // 2. Standard background click handling (runs only if no overlays are open)
         return content.mouseClicked(mouseX, mouseY, button);
     }
 
     public void mouseDragged(double mouseX, double mouseY, int button) {
-        content.mouseDragged(mouseX, mouseY, button);
-        for (Widget overlay : overlays) {
-            overlay.mouseDragged(mouseX, mouseY, button);
+        // If an overlay is open, block background dragging
+        if (!overlays.isEmpty()) {
+            overlays.get(overlays.size() - 1).mouseDragged(mouseX, mouseY, button);
+        } else {
+            content.mouseDragged(mouseX, mouseY, button);
         }
     }
 
     public void mouseReleased(double mouseX, double mouseY, int button) {
-        content.mouseReleased(mouseX, mouseY, button);
-        for (Widget overlay : overlays) {
-            overlay.mouseReleased(mouseX, mouseY, button);
+        // If an overlay is open, block background releases
+        if (!overlays.isEmpty()) {
+            overlays.get(overlays.size() - 1).mouseReleased(mouseX, mouseY, button);
+        } else {
+            content.mouseReleased(mouseX, mouseY, button);
         }
     }
 

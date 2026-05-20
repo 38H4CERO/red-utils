@@ -38,12 +38,17 @@ public class ColorWidget extends AbstractWidget {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (setting.isVisible() && isHovered(mouseX, mouseY) && button == 0) {
-            // Get screen coordinates to center the popup
             int screenW = Minecraft.getInstance().getWindow().getGuiScaledWidth();
             int screenH = Minecraft.getInstance().getWindow().getGuiScaledHeight();
 
-            // Create your color picker popup (we will make ColorPickerPopup implement Widget next)
-            RootPanel.getInstance().addOverlay(new ColorPickerPopup(setting, screenW / 2, screenH / 2));
+            // 1. Create the plain ColorPickerPopup (constructor has no coordinates now!)
+            ColorPickerPopup picker = new ColorPickerPopup(setting);
+
+            // 2. Wrap it inside the draggable WindowWidget decorator shell!
+            WindowWidget draggableWindow = new WindowWidget("Color Picker", screenW / 2, screenH / 2, picker);
+
+            // 3. Add the decorated window as the overlay
+            RootPanel.getInstance().addOverlay(draggableWindow);
             return true;
         }
         return false;

@@ -56,7 +56,6 @@ public abstract class Module {
         this.enabled = status;
         if (status) onEnable();
         else onDisable();
-        ConfigManager.save();
     }
 
     public void toggle() {

@@ -42,6 +42,12 @@ public abstract class AbstractWidget implements Widget {
         return GuiUtils.contains(mouseX, mouseY, x, y, width, height);
     }
 
+    // It closes when clicked outside (For popups)
+    @Override
+    public boolean isDismissible() {
+        return true;
+    }
+
     @Override public void mouseDragged(double mouseX, double mouseY, int button) {}
     @Override public void mouseReleased(double mouseX, double mouseY, int button) {}
 }

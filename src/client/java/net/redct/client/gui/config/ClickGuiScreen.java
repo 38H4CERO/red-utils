@@ -4,6 +4,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import net.redct.client.config.ConfigManager;
 import net.redct.client.gui.widget.AbsPanel;
 import net.redct.client.gui.widget.RootPanel;
 import net.redct.client.gui.widget.VPanel;
@@ -74,5 +75,11 @@ public class ClickGuiScreen extends Screen {
     @Override
     public boolean isInGameUi() {
         return true; // Keeps the background dark
+    }
+
+    @Override
+    public void onClose() {
+        ConfigManager.save();
+        super.onClose();
     }
 }

@@ -19,7 +19,8 @@ public class SliderSetting extends Setting {
     public void setDragging(boolean dragging) { this.dragging = dragging; }
 
     public void setValue(double value) {
-        this.value = Math.clamp(value, min, max);
+        double temp = Math.clamp(value, min, max);
+        this.value = Math.floor(temp * 100) / 100;;
     }
 
 }

@@ -3,61 +3,45 @@ package net.redct.client.gui.hud;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.redct.client.config.ColorSetting;
-import net.redct.client.gui.config.UILayout;
 import net.redct.client.gui.widget.AbstractWidget;
 import net.redct.client.gui.config.UITheme;
 import net.redct.client.utils.GuiUtils;
 
 public class ColorPickerPopup extends AbstractWidget {
-    // TODO: move constants to UiLayout.java
-    private static final int TITLE_BAR_HEIGHT = 14;
-
     // Layout Constants
-    private static final int SB_SIZE   = 100; // saturation/brightness square
-    private static final int BAR_WIDTH = 12;  // hue and alpha bars
-    private static final int BAR_GAP   = 6;   // gap between square and bars
+    private static final int SB_SIZE   = 100;
+    private static final int BAR_WIDTH = 12;
+    private static final int BAR_GAP   = 6;
     private static final int PADDING   = 8;
     private static final int HEX_HEIGHT = 14;
 
-    // Total popup size
     private static final int WIDTH  = PADDING + SB_SIZE + BAR_GAP + BAR_WIDTH + BAR_GAP + BAR_WIDTH + PADDING;
-    private static final int HEIGHT = PADDING + SB_SIZE + BAR_GAP + TITLE_BAR_HEIGHT + HEX_HEIGHT + PADDING;
+    private static final int HEIGHT = PADDING + SB_SIZE + BAR_GAP + HEX_HEIGHT + PADDING;
 
     private final ColorSetting target;
 
-    // Current HSB + alpha state
+    // HSB state
     private float hue, saturation, brightness;
     private int alpha;
 
-    // Drag state
-    private boolean draggingSB   = false;
-    private boolean draggingHue  = false;
+    // Drag states (Only for the color controls themselves!)
+    private boolean draggingSB    = false;
+    private boolean draggingHue   = false;
     private boolean draggingAlpha = false;
 
-    // Title Bar dragging state fields
-    private boolean draggingTitle = false;
-    private int dragX, dragY;
-
-    public ColorPickerPopup(ColorSetting setting, int centerX, int centerY) {
-        // 1. Pass total dimensions to the parent Widget class
+    public ColorPickerPopup(ColorSetting setting) {
         super(WIDTH, HEIGHT);
-
         this.target = setting;
 
-        // 2. Set the starting coordinates on the screen
-        this.x = centerX - WIDTH / 2;
-        this.y = centerY - HEIGHT / 2;
-
-        // Load current color into HSB
         this.hue        = setting.getHue();
         this.saturation = setting.getSaturation();
         this.brightness = setting.getBrightness();
         this.alpha      = setting.getAlpha();
     }
 
-    // ── Coordinates ────────────────────────────────────────────
+    // ── Coordinates (Simple, no offsets!) ──────────────────────
     private int sbX()    { return x + PADDING; }
-    private int sbY()    { return y + TITLE_BAR_HEIGHT + PADDING; }
+    private int sbY()    { return y + PADDING; }
     private int hueX()   { return sbX() + SB_SIZE + BAR_GAP; }
     private int hueY()   { return sbY(); }
     private int alphaX() { return hueX() + BAR_WIDTH + BAR_GAP; }
@@ -67,23 +51,9 @@ public class ColorPickerPopup extends AbstractWidget {
     // ── Rendering ──────────────────────────────────────────────
     @Override
     public void render(GuiGraphicsExtractor graphics, Font font, int mouseX, int mouseY) {
-
-        // Process title dragging logic
-        if (draggingTitle) {
-            this.x = mouseX - this.dragX;
-            this.y = mouseY - this.dragY;
-        }
-
-        // Render Title Bar
-        graphics.fill(x, y, x + WIDTH, y + TITLE_BAR_HEIGHT, UITheme.FRAME_BG);
-        graphics.outline(x, y, WIDTH, TITLE_BAR_HEIGHT, UITheme.BORDER);
-        graphics.text(font, "Color Picker", x + UILayout.TEXT_X_OFFSET, y + 2, UITheme.TEXT_PRIMARY);
-
-        // Background
-        int bodyY = y + TITLE_BAR_HEIGHT;
-        int bodyHeight = HEIGHT - TITLE_BAR_HEIGHT;
-        graphics.fill(x, bodyY, x + WIDTH, bodyY + bodyHeight, UITheme.MODULE_BG);
-        graphics.outline(x, bodyY, WIDTH, bodyHeight, UITheme.BORDER);
+        // Render pure content background
+        graphics.fill(x, y, x + WIDTH, y + HEIGHT, UITheme.MODULE_BG);
+        graphics.outline(x, y, WIDTH, HEIGHT, UITheme.BORDER);
 
         renderSBSquare(graphics);
         renderHueBar(graphics);
@@ -94,7 +64,6 @@ public class ColorPickerPopup extends AbstractWidget {
 
     private void renderSBSquare(GuiGraphicsExtractor graphics) {
         int hueColor = hsbToArgb(hue, 1f, 1f, 255);
-
         for (int i = 0; i < SB_SIZE; i++) {
             float s = (float) i / SB_SIZE;
             int topColor    = blendColors(0xFFFFFFFF, hueColor, s);
@@ -105,16 +74,21 @@ public class ColorPickerPopup extends AbstractWidget {
 
     private void renderHueBar(GuiGraphicsExtractor graphics) {
         float[] hueStops = {0f, 1f/6f, 2f/6f, 3f/6f, 4f/6f, 5f/6f, 1f};
-        int segmentHeight = SB_SIZE / 6;
 
+        int lastY = hueY();
         for (int i = 0; i < 6; i++) {
+            int nextY = hueY() + (int) Math.round((double)(i + 1) * SB_SIZE / 6.0);
+
             int col1 = hsbToArgb(hueStops[i],     1f, 1f, 255);
             int col2 = hsbToArgb(hueStops[i + 1], 1f, 1f, 255);
+
             graphics.fillGradient(
-                    hueX(), hueY() + i * segmentHeight,
-                    hueX() + BAR_WIDTH, hueY() + (i + 1) * segmentHeight,
+                    hueX(), lastY,
+                    hueX() + BAR_WIDTH, nextY,
                     col1, col2
             );
+
+            lastY = nextY;
         }
         graphics.outline(hueX(), hueY(), BAR_WIDTH, SB_SIZE, UITheme.BORDER);
     }
@@ -153,7 +127,6 @@ public class ColorPickerPopup extends AbstractWidget {
     // ── Interaction ────────────────────────────────────────────
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        // TODO: close if clicked outside
         if (!isInsidePopup(mouseX, mouseY)) return false;
 
         if (GuiUtils.contains(mouseX, mouseY, sbX(), sbY(), SB_SIZE, SB_SIZE)) {
@@ -171,15 +144,7 @@ public class ColorPickerPopup extends AbstractWidget {
             updateAlpha(mouseY);
             return true;
         }
-        if (GuiUtils.contains(mouseX, mouseY, x, y, WIDTH, TITLE_BAR_HEIGHT)) {
-            if (button == 0) {
-                this.draggingTitle = true;
-                this.dragX = (int) (mouseX - this.x);
-                this.dragY = (int) (mouseY - this.y);
-                return true;
-            }
-        }
-        return true; // consumes click inside bounds
+        return true;
     }
 
     @Override
@@ -195,7 +160,6 @@ public class ColorPickerPopup extends AbstractWidget {
             draggingSB    = false;
             draggingHue   = false;
             draggingAlpha = false;
-            draggingTitle = false;
         }
     }
 
@@ -220,7 +184,6 @@ public class ColorPickerPopup extends AbstractWidget {
         target.setFromHSBA(hue, saturation, brightness, alpha);
     }
 
-    // ── Helpers ─────────────────────────────────────────────────
     public boolean isInsidePopup(double mouseX, double mouseY) {
         return GuiUtils.contains(mouseX, mouseY, x, y, width, height);
     }

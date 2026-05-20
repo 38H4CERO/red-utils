@@ -21,4 +21,6 @@ public interface Widget {
 
     default void mouseDragged(double mouseX, double mouseY, int button) {}
     default void mouseReleased(double mouseX, double mouseY, int button) {}
+
+    boolean isDismissible();
 }
