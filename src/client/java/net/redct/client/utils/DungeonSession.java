@@ -51,7 +51,7 @@ public class DungeonSession {
         if (isDataInitialized) return;
         this.roomStep = getRoomSize() + DungeonUtils.ROOM_GAP;
 
-        DungeonUtils.Position tempPos = calculateRoomOffset(mapColors);
+        Utils.Vec2 tempPos = calculateRoomOffset(mapColors);
         if(tempPos == null) return;
         xOffset = tempPos.x();
         yOffset = tempPos.y();
@@ -62,9 +62,9 @@ public class DungeonSession {
         isDataInitialized = true;
     }
 
-    private DungeonUtils.Position calculateRoomOffset( byte[] mapColors) {
+    private Utils.Vec2 calculateRoomOffset( byte[] mapColors) {
 
-        DungeonUtils.Position base = getTopLeft(mapColors);
+        Utils.Vec2 base = getTopLeft(mapColors);
         if (base == null) return null;
 
         int x = base.x();
@@ -76,7 +76,7 @@ public class DungeonSession {
         while ((y - roomStep) > 0){
             y-= roomStep;
         }
-        return new DungeonUtils.Position(x, y);
+        return new Utils.Vec2(x, y);
     }
 
     public void addRoom(DungeonUtils.Room room) {

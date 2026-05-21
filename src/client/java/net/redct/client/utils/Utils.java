@@ -55,5 +55,26 @@ public class Utils {
         }
     }
 
+    public record Vec2(int x, int y) {
+        @Override
+        public String toString() {
+            return String.format("[%d,%d]", x, y);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == this) {
+                return true;
+            }
+
+            if (!(o instanceof Vec2 p)) {
+                return false;
+            }
+            return (this.x == p.x && this.y == p.y);
+        }
+
+    }
+
+
 
 }

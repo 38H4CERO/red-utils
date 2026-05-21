@@ -70,37 +70,16 @@ public class DungeonUtils {
         }
     }
 
-    // ── Data classes ─────────────────────────────────────────────────────────
-        public record Position(int x, int y) {
-
-        @Override
-            public String toString() {
-                return String.format("[%d,%d]", x, y);
-            }
-
-            @Override
-            public boolean equals(Object o) {
-                if (o == this) {
-                    return true;
-                }
-
-                if (!(o instanceof Position p)) {
-                    return false;
-                }
-                return (this.x == p.x && this.y == p.y);
-            }
-        }
-
     public static class Room{
 
-        public Position topLeft;
+        public Utils.Vec2 topLeft;
         public Status status;
         public Type type;
         // Room shape in dungeon
-        public List<Position> segments;
+        public List<Utils.Vec2> segments;
 
         public Room(int x, int y, Type type){
-            this.topLeft = new Position(x, y);
+            this.topLeft = new Utils.Vec2(x, y);
             this.status = Status.UNKNOWN;
             this.type = type;
             this.segments = new ArrayList<>();
@@ -113,24 +92,24 @@ public class DungeonUtils {
 
 
         public void addSegment(int x, int y) {
-            segments.add(new Position(x, y));
+            segments.add(new Utils.Vec2(x, y));
         }
 
         public boolean hasSegment(int x, int y){
-            for (Position segment: segments){
-                if (segment.x == x && segment.y == y) {
+            for (Utils.Vec2 segment: segments){
+                if (segment.x() == x && segment.y() == y) {
                     return true;
                 }
             }
             return false;
         }
 
-        public Position topLeftSegment(){
+        public Utils.Vec2 topLeftSegment(){
             if (segments == null || segments.isEmpty()) {return null;}
-            Position topLeft = segments.get(0);
+            Utils.Vec2 topLeft = segments.get(0);
 
-            for(Position segment: segments){
-                if (segment.y < topLeft.y || (segment.y == topLeft.y && segment.x < topLeft.x)) {
+            for(Utils.Vec2 segment: segments){
+                if (segment.x() < topLeft.y() || (segment.y() == topLeft.y() && segment.x() < topLeft.x())) {
                     topLeft = segment;
                 }
             }
@@ -175,11 +154,11 @@ public class DungeonUtils {
         return null;
     }
 
-    public static Position getTopLeft(byte[] mapColors){
+    public static Utils.Vec2 getTopLeft(byte[] mapColors){
         for (int x = 0; x < MAP_SIZE; x++){
             for (int y = 0; y < MAP_SIZE; y++){
                 if ((mapColors[y * MAP_SIZE + x] & 0xFF)!= 0){
-                    return new Position(x, y);
+                    return new Utils.Vec2(x, y);
                 }
             }
         }

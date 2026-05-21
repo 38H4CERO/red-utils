@@ -65,7 +65,7 @@ public class DungeonClearAlert extends Module {
     private static boolean updateRoomStatus(DungeonSession session, byte[] mapColors, Room room){
         int roomStep = session.getRoomStep();
 
-        Position pos = room.topLeft;
+        Utils.Vec2 pos = room.topLeft;
         int xCoord = pos.x() * roomStep + session.getXOffset() ;
         int yCoord = pos.y() * roomStep + session.getYOffset() ;
 
@@ -189,7 +189,7 @@ public class DungeonClearAlert extends Module {
 
     private static boolean isKnownCell(DungeonSession session, int gridX, int gridY) {
         for (Room room : session.getRooms())
-            for (Position seg : room.segments)
+            for (Utils.Vec2 seg : room.segments)
                 if (seg.x() == gridX && seg.y() == gridY) return true;
         return false;
     }
