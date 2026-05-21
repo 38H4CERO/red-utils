@@ -10,6 +10,9 @@ import net.redct.client.gui.hud.HudManager;
 import net.redct.client.module.ModuleManager;
 import net.redct.client.module.Module;
 
+import static net.redct.client.utils.GuiTextUtils.colorToHex;
+import static net.redct.client.utils.GuiTextUtils.hexToColor;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -18,12 +21,12 @@ import java.io.IOException;
 public class ConfigManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    private static final File CONFIG_DIR = new File(FabricLoader.getInstance().getConfigDir().toFile(), "redutils");
-    private static final File THEME_DIR = new File(CONFIG_DIR, "themes");
-    private static final File PROFILE_DIR = new File(CONFIG_DIR, "profiles");
-    private static final File CONFIG_FILE = new File(CONFIG_DIR, "config.json");
+    static final File CONFIG_DIR = new File(FabricLoader.getInstance().getConfigDir().toFile(), "redutils");
+    static final File THEME_DIR = new File(CONFIG_DIR, "themes");
+    static final File PROFILE_DIR = new File(CONFIG_DIR, "profiles");
+    static final File CONFIG_FILE = new File(CONFIG_DIR, "config.json");
 
-    public static final String defaultName = "default";
+    static final String defaultName = "default";
 
     // Global placeholders for active theme and profile configurations
     public static String activeTheme = defaultName;
@@ -31,38 +34,30 @@ public class ConfigManager {
 
 
     public static void save() {
-        // Por si acaso
-        createMissingDirs();
+        createMissingDirs(); // Ensure folders exist on disk
 
         JsonObject root = new JsonObject();
 
         // 1. Add root-level placeholders
         root.addProperty("active_theme", activeTheme);
-        root.addProperty("active_profile", activeProfile);
+        root.addProperty("active_hud_profile", activeProfile);
 
-        // 2. Nest all module configurations using the extracted serialization helper
+        // 2. Nest all module configurations using the helper
         JsonObject configObj = new JsonObject();
         for (Module module : ModuleManager.getModules()) {
             configObj.add(module.getID(), serializeModule(module));
         }
         root.add("config", configObj);
 
-        // 3. HUD Positions
-        JsonObject hudObj = new JsonObject();
-        for (HudInterface element : HudManager.getElements()) {
-            JsonObject obj = new JsonObject();
-            obj.addProperty("x", element.getX());
-            obj.addProperty("y", element.getY());
-            obj.addProperty("scale", element.getScale());
-            hudObj.add(element.getId(), obj);
-        }
-        root.add("hud", hudObj);
-
+        // 3. Save module settings to config.json
         try (FileWriter writer = new FileWriter(CONFIG_FILE)) {
             GSON.toJson(root, writer);
         } catch (IOException e) {
             RedUtilsClient.LOGGER.error("Failed to save config", e);
         }
+
+        // 4. Save active HUD positions to the active profile file on disk (Zero redundancy!)
+        saveProfile(activeProfile);
     }
 
     public static void load() {
@@ -80,7 +75,6 @@ public class ConfigManager {
             }
             JsonObject root = json.getAsJsonObject();
 
-
             // 1. Load active theme and profile if present
             if (root.has("active_theme")) {
                 activeTheme = root.get("active_theme").getAsString();
@@ -89,7 +83,7 @@ public class ConfigManager {
                 activeProfile = root.get("active_hud_profile").getAsString();
             }
 
-            // Fallback if they dont exist
+            // Fallback to default if the selected files don't exist on disk
             File themeFile = new File(THEME_DIR, activeTheme + ".json");
             if (!themeFile.exists()) {
                 activeTheme = defaultName;
@@ -100,7 +94,11 @@ public class ConfigManager {
                 activeProfile = defaultName;
             }
 
-            // 2. Load Modules settings directly from the "config" block
+            // 2. Apply theme colors and HUD coordinates dynamically on startup!
+            loadTheme(activeTheme);
+            loadProfile(activeProfile);
+
+            // 3. Load Modules settings directly from the "config" block
             if (root.has("config")) {
                 JsonObject configObj = root.getAsJsonObject("config");
                 for (Module module : ModuleManager.getModules()) {
@@ -116,21 +114,10 @@ public class ConfigManager {
                         switch (setting) {
                             case ToggleSetting toggle -> toggle.setValue(moduleObj.get(setting.getId()).getAsBoolean());
                             case SliderSetting slider -> slider.setValue(moduleObj.get(setting.getId()).getAsDouble());
-                            case ColorSetting color -> color.setColor(moduleObj.get(setting.getId()).getAsInt());
+                            case ColorSetting color -> color.setColor(hexToColor(moduleObj.get(setting.getId()).getAsString()));
                             default -> {}
                         }
                     }
-                }
-            }
-
-            // 3. Load HUD Positions
-            if (root.has("hud")) {
-                JsonObject hudObj = root.getAsJsonObject("hud");
-                for (HudInterface element : HudManager.getElements()) {
-                    if (!hudObj.has(element.getId())) continue;
-                    JsonObject obj = hudObj.getAsJsonObject(element.getId());
-                    element.setXY(obj.get("x").getAsInt(), obj.get("y").getAsInt());
-                    element.setScale(obj.get("scale").getAsFloat());
                 }
             }
 
@@ -147,7 +134,7 @@ public class ConfigManager {
             switch (setting) {
                 case ToggleSetting toggle -> moduleObj.addProperty(setting.getId(), toggle.getValue());
                 case SliderSetting slider -> moduleObj.addProperty(setting.getId(), slider.getValue());
-                case ColorSetting color   -> moduleObj.addProperty(setting.getId(), color.getColor());
+                case ColorSetting color   -> moduleObj.addProperty(setting.getId(), colorToHex(color.getColor()));
                 default -> {}
             }
         }
@@ -159,17 +146,22 @@ public class ConfigManager {
         if (!THEME_DIR.exists()) THEME_DIR.mkdirs();
         if (!PROFILE_DIR.exists()) PROFILE_DIR.mkdirs();
 
-        // 1. Ensure "Default.json" theme always exists
-        File defaultTheme = new File(THEME_DIR, defaultName+".json");
+        // 1. Ensure "default.json" theme always exists
+        File defaultTheme = new File(THEME_DIR, defaultName + ".json");
         if (!defaultTheme.exists()) {
-            saveTheme(defaultTheme); // Updated name
+            saveTheme(defaultTheme);
         }
 
-        // 2. Ensure "Default.json" HUD profile always exists
-        File defaultProfile = new File(PROFILE_DIR, defaultName+".json");
+        // 2. Ensure "default.json" HUD profile always exists
+        File defaultProfile = new File(PROFILE_DIR, defaultName + ".json");
         if (!defaultProfile.exists()) {
             saveProfile(defaultProfile);
         }
+    }
+
+    public static void saveProfile(String profileName) {
+        File file = new File(PROFILE_DIR, profileName + ".json");
+        saveProfile(file);
     }
 
     private static void saveProfile(File file) {
@@ -185,18 +177,21 @@ public class ConfigManager {
         try (FileWriter writer = new FileWriter(file)) {
             GSON.toJson(hudObj, writer);
         } catch (IOException e) {
-            RedUtilsClient.LOGGER.error("Failed to write default HUD profile", e);
+            RedUtilsClient.LOGGER.error("Failed to write HUD profile", e);
         }
+    }
+
+    public static void saveTheme(String themeName) {
+        File file = new File(THEME_DIR, themeName + ".json");
+        saveTheme(file);
     }
 
     private static void saveTheme(File file) {
         JsonObject themeObj = new JsonObject();
         try {
-            // Loop through all public fields in UITheme
             for (java.lang.reflect.Field field : UITheme.class.getFields()) {
-                // Only process public static integer fields
                 if (field.getType() == int.class) {
-                    int value = field.getInt(null); // Read the value from the static field
+                    int value = field.getInt(null);
                     themeObj.addProperty(field.getName(), String.format("0x%08X", value));
                 }
             }
@@ -221,15 +216,31 @@ public class ConfigManager {
             for (java.lang.reflect.Field field : UITheme.class.getFields()) {
                 if (field.getType() == int.class && root.has(field.getName())) {
                     String hexValue = root.get(field.getName()).getAsString();
-
-                    // Decode hex string (like "0xFF222222") safely into a signed integer
                     int color = (int) Long.parseLong(hexValue.replace("0x", ""), 16);
-
-                    field.setInt(null, color); // Apply the color to UITheme static field!
+                    field.setInt(null, color);
                 }
             }
         } catch (Exception e) {
             RedUtilsClient.LOGGER.error("Failed to load theme: " + themeName, e);
+        }
+    }
+
+    public static void loadProfile(String profileName) {
+        File profileFile = new File(PROFILE_DIR, profileName + ".json");
+        if (!profileFile.exists()) return;
+
+        try (FileReader reader = new FileReader(profileFile)) {
+            JsonObject root = JsonParser.parseReader(reader).getAsJsonObject();
+
+            for (HudInterface element : HudManager.getElements()) {
+                if (root.has(element.getId())) {
+                    JsonObject obj = root.getAsJsonObject(element.getId());
+                    element.setXY(obj.get("x").getAsInt(), obj.get("y").getAsInt());
+                    element.setScale(obj.get("scale").getAsFloat());
+                }
+            }
+        } catch (Exception e) {
+            RedUtilsClient.LOGGER.error("Failed to load HUD profile: " + profileName, e);
         }
     }
 }
