@@ -21,24 +21,31 @@ public class SelectorPanelWidget extends Panel {
         updateList(); // Initial list generation
     }
 
-    // Dynamic list re-builder
+    // Only call this when files are actually added or removed
     public void updateList() {
-        children.clear(); // Safely clear old children without triggering layout loops
-
+        children.clear();
         List<String> items = listSupplier.get();
         String activeItem = activeSupplier.get();
 
         for (String item : items) {
             boolean isActive = item.equalsIgnoreCase(activeItem);
 
-            // Add directly to children list to bypass layout recursion
             children.add(new SelectorItemWidget(item, isActive, selected -> {
-                onSelect.accept(selected); // Trigger selection callback
-                updateList();             // Re-fetch and highlight the new active item!
+                onSelect.accept(selected); // Tell the backend the selection changed
+                updateVisualSelection(selected); // Zero-allocation UI update!
             }));
         }
 
-        layout(); // Trigger vertical alignment once
+        revalidate(); // Bubble up layout to parent WindowWidget in case list height changed
+    }
+
+    // Zero-allocation method to update highlights
+    public void updateVisualSelection(String newActiveItem) {
+        for (Widget child : children) {
+            if (child instanceof SelectorItemWidget itemWidget) {
+                itemWidget.setActive(itemWidget.getName().equalsIgnoreCase(newActiveItem));
+            }
+        }
     }
 
     @Override

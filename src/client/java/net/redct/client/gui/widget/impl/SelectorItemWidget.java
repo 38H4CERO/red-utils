@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 
 public class SelectorItemWidget extends AbstractWidget {
     private final String name;
-    private final boolean isActive;
+    private boolean isActive;
     private final Consumer<String> onClick;
 
     public SelectorItemWidget(String name, boolean isActive, Consumer<String> onClick) {
@@ -19,9 +19,16 @@ public class SelectorItemWidget extends AbstractWidget {
         this.onClick = onClick;
     }
 
+    public String getName() {
+        return this.name;
+    }
+
+    public void setActive(boolean active) {
+        this.isActive = active;
+    }
+
     @Override
     public void render(GuiGraphicsExtractor graphics, Font font, int mouseX, int mouseY) {
-        // Highlight green if active, lighter grey if hovered, standard dark grey otherwise
         int bg = isActive ? UITheme.MODULE_ENABLED : (isHovered(mouseX, mouseY) ? UITheme.MODULE_BG_HOVER : UITheme.SETTING_BG);
 
         graphics.fill(x, y, x + width, y + height, bg);

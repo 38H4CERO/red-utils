@@ -19,11 +19,26 @@ public class ToggleWidget extends AbstractWidget {
     public void render(GuiGraphicsExtractor graphics, Font font, int mouseX, int mouseY) {
         if (!setting.isVisible()) return;
 
-        // Uses setting.getValue()
-        int bg = setting.getValue() ? UITheme.MODULE_ENABLED : UITheme.SETTING_BG;
-
-        graphics.fill(x, y, x + width, y + height, bg);
+        // 1. Draw flat setting background
+        graphics.fill(x, y, x + width, y + height, UITheme.SETTING_BG);
         graphics.text(font, setting.getName(), x + UILayout.TEXT_X_OFFSET, y + UILayout.TEXT_Y_OFFSET, UITheme.TEXT_SETTING);
+
+        // 2. The Modern Switch Geometry using UILayout
+        int switchX = x + width - UILayout.TOGGLE_WIDTH - 4;
+        int switchY = y + (height - UILayout.TOGGLE_HEIGHT) / 2;
+
+        int switchBgColor = setting.getValue() ? UITheme.TOGGLE_ON : UITheme.TOGGLE_OFF_BG;
+        graphics.fill(switchX, switchY, switchX + UILayout.TOGGLE_WIDTH, switchY + UILayout.TOGGLE_HEIGHT, switchBgColor);
+
+        // 3. The "Knob" (White square that moves)
+        // You can also move knobSize to UILayout if you want to be extremely thorough,
+        // but deriving it dynamically like this guarantees it always fits inside the toggle height!
+        int knobSize = UILayout.TOGGLE_HEIGHT - 2;
+
+        int knobX = setting.getValue() ? (switchX + UILayout.TOGGLE_WIDTH - knobSize - 1) : (switchX + 1);
+        int knobY = switchY + 1;
+
+        graphics.fill(knobX, knobY, knobX + knobSize, knobY + knobSize, 0xFFFFFFFF);
     }
 
     @Override

@@ -18,4 +18,8 @@ public class UITheme {
     public static int BORDER          = 0xFF444444;
     public static int BORDER_ACTIVE   = 0xFFFFFFFF;
     public static int BORDER_INACTIVE = 0x88AAAAAA;
+
+    public static int TOGGLE_ON       = 0xFF4CD964;
+    public static int TOGGLE_OFF_BG   = 0xFF333333;
+    public static int SLIDER_TRACK_BG = 0xFF222222;
 }

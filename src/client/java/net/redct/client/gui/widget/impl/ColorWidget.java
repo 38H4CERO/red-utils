@@ -9,6 +9,9 @@ import net.redct.client.gui.widget.AbstractWidget;
 import net.redct.client.gui.widget.RootPanel;
 import net.redct.client.gui.config.UITheme;
 import net.redct.client.gui.config.UILayout;
+import net.redct.client.utils.Utils;
+
+import static net.redct.client.utils.GuiUtils.centerWindow;
 
 public class ColorWidget extends AbstractWidget {
     private final ColorSetting setting;
@@ -41,13 +44,19 @@ public class ColorWidget extends AbstractWidget {
             int screenW = Minecraft.getInstance().getWindow().getGuiScaledWidth();
             int screenH = Minecraft.getInstance().getWindow().getGuiScaledHeight();
 
-            // 1. Create the plain ColorPickerPopup (constructor has no coordinates now!)
+            // 1. Create the plain ColorPickerPopup
             ColorPickerPopup picker = new ColorPickerPopup(setting);
 
-            // 2. Wrap it inside the draggable WindowWidget decorator shell!
-            WindowWidget draggableWindow = new WindowWidget("Color Picker", screenW / 2, screenH / 2, picker);
+            // 2. Wrap it inside the draggable WindowWidget at 0,0 first
+            // so it can initialize its layout and calculate its total width/height
+            WindowWidget draggableWindow = new WindowWidget("Color Picker", 0, 0, picker);
 
-            // 3. Add the decorated window as the overlay
+            // 3. Calculate the center using the WINDOW'S dimensions, not the ColorWidget's dimensions
+            Utils.Vec2 pos = centerWindow(screenW, screenH, draggableWindow.getWidth(), draggableWindow.getHeight());
+
+            // 4. Update the window's position before pushing it to the overlay stack
+            draggableWindow.setPosition(pos.x(), pos.y());
+
             RootPanel.getInstance().addOverlay(draggableWindow);
             return true;
         }
