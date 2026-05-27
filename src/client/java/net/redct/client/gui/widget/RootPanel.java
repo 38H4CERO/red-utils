@@ -2,9 +2,13 @@ package net.redct.client.gui.widget;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
 import net.redct.client.utils.GuiUtils;
 import java.util.ArrayList;
 import java.util.List;
+
+import static net.redct.client.utils.Logger.log;
 
 public class RootPanel {
     private static RootPanel instance;
@@ -85,6 +89,24 @@ public class RootPanel {
         } else {
             content.mouseReleased(mouseX, mouseY, button);
         }
+    }
+
+    public boolean keyPressed(KeyEvent event) {
+        if (!overlays.isEmpty()) {
+            // Custom Behavior: Escape closes the active popup, not the whole menu!
+            if (event.isEscape()) {
+                overlayPop();
+                return true;
+            }
+            return overlays.getLast().keyPressed(event);
+        }
+        return content.keyPressed(event);
+    }
+
+    public boolean charTyped(CharacterEvent event) {
+        if (!overlays.isEmpty()) return overlays.getLast().charTyped(event);;
+
+        return content.charTyped(event);
     }
 
     public Panel getContent() {

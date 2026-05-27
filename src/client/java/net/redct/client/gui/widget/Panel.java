@@ -2,6 +2,9 @@ package net.redct.client.gui.widget;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,13 +17,13 @@ public abstract class Panel extends AbstractWidget {
 
     public void add(Widget widget) {
         children.add(widget);
-        widget.setParent(this); // 1. Assign this panel as the child's parent
+        widget.setParent(this);
         layout();
     }
 
     public void remove(Widget widget) {
         children.remove(widget);
-        widget.setParent(null); // 2. Clear parent reference
+        widget.setParent(null);
         layout();
     }
 
@@ -61,5 +64,27 @@ public abstract class Panel extends AbstractWidget {
         for (Widget child : children) {
             child.mouseReleased(mouseX, mouseY, button);
         }
+    }
+
+    // ─── THE FIX: Routing Keyboard Events to Children ───
+
+    @Override
+    public boolean charTyped(CharacterEvent event) {
+        for (int i = children.size() - 1; i >= 0; i--) {
+            if (children.get(i).charTyped(event)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean keyPressed(KeyEvent event) {
+        for (int i = children.size() - 1; i >= 0; i--) {
+            if (children.get(i).keyPressed(event)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

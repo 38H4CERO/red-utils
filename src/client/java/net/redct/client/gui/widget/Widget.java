@@ -2,6 +2,8 @@ package net.redct.client.gui.widget;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
 
 public interface Widget {
     int getX();
@@ -21,6 +23,8 @@ public interface Widget {
 
     default void mouseDragged(double mouseX, double mouseY, int button) {}
     default void mouseReleased(double mouseX, double mouseY, int button) {}
+    default boolean keyPressed(KeyEvent event) { return false; }
+    default boolean charTyped(CharacterEvent event) { return false; }
 
     boolean isDismissible();
 }

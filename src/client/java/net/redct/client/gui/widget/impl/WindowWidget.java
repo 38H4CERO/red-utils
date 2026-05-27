@@ -15,7 +15,6 @@ public class WindowWidget extends Panel {
     private boolean isDragging = false;
     private int dragX, dragY;
 
-
     public WindowWidget(String title, int x, int y, Widget content) {
         this.title = title;
         this.x = x;
@@ -25,7 +24,7 @@ public class WindowWidget extends Panel {
         this.height = UILayout.FRAME_HEADER_HEIGHT;
 
         if (this.content != null) {
-            this.content.setParent(this);
+            this.add(this.content);
         }
 
         layout();
@@ -34,11 +33,7 @@ public class WindowWidget extends Panel {
     @Override
     public void layout() {
         if (content != null) {
-            // If the content is a panel, force it to lay itself out first
-            if (content instanceof Panel panel) {
-                panel.layout();
-            }
-
+            if (content instanceof Panel panel) panel.layout();
             content.setPosition(this.x, this.y + UILayout.FRAME_HEADER_HEIGHT);
             this.height = UILayout.FRAME_HEADER_HEIGHT + content.getHeight();
             this.width = content.getWidth() > 0 ? content.getWidth() : UILayout.FRAME_WIDTH;
@@ -50,21 +45,20 @@ public class WindowWidget extends Panel {
         if (isDragging) {
             this.x = mouseX - this.dragX;
             this.y = mouseY - this.dragY;
-            layout();
+            layout(); // Move children with the window
         }
 
         // Draw Window Header
         graphics.fill(x, y, x + width, y + UILayout.FRAME_HEADER_HEIGHT, UITheme.FRAME_BG);
         graphics.text(font, title, x + UILayout.TEXT_X_OFFSET, y + UILayout.TEXT_Y_OFFSET, UITheme.TEXT_PRIMARY);
 
-        // Draw Content
-        if (content != null) {
-            content.render(graphics, font, mouseX, mouseY);
-        }
+        // THE FIX: Let Panel handle drawing the children!
+        super.render(graphics, font, mouseX, mouseY);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        // 1. Check if the user clicked the header to drag
         if (GuiUtils.contains(mouseX, mouseY, x, y, width, UILayout.FRAME_HEADER_HEIGHT)) {
             if (button == 0) {
                 this.isDragging = true;
@@ -73,19 +67,13 @@ public class WindowWidget extends Panel {
                 return true;
             }
         }
-        return content != null && content.mouseClicked(mouseX, mouseY, button);
-    }
 
-    @Override
-    public void mouseDragged(double mouseX, double mouseY, int button) {
-        if (content != null) content.mouseDragged(mouseX, mouseY, button);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
     public void mouseReleased(double mouseX, double mouseY, int button) {
-        if (button == 0) {
-            this.isDragging = false;
-        }
-        if (content != null) content.mouseReleased(mouseX, mouseY, button);
+        if (button == 0) this.isDragging = false;
+        super.mouseReleased(mouseX, mouseY, button);
     }
 }

@@ -1,14 +1,19 @@
 package net.redct.client.gui.config;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.redct.client.config.ConfigManager;
+import net.redct.client.gui.hud.impl.TextInputPopup;
 import net.redct.client.gui.widget.AbsPanel;
 import net.redct.client.gui.widget.RootPanel;
 import net.redct.client.gui.widget.VPanel;
+import net.redct.client.gui.widget.impl.ButtonWidget;
 import net.redct.client.gui.widget.impl.IconButtonWidget;
 import net.redct.client.gui.widget.impl.ModuleWidget;
 import net.redct.client.gui.widget.impl.WindowWidget;
@@ -16,7 +21,9 @@ import net.redct.client.module.Category;
 import net.redct.client.module.Module;
 import net.redct.client.module.ModuleManager;
 
-public class ClickGuiScreen extends Screen {
+import static net.redct.client.utils.Logger.log;
+
+public class ConfigScreen extends Screen {
     private final RootPanel rootPanel;
     private static final Identifier PROFILES_ICON = Identifier.fromNamespaceAndPath("red-utils", "textures/gui/profiles.png");
     private static final Identifier THEMES_ICON = Identifier.fromNamespaceAndPath("red-utils", "textures/gui/themes.png");
@@ -25,7 +32,7 @@ public class ClickGuiScreen extends Screen {
     private final IconButtonWidget profilesBtn;
     private final IconButtonWidget themesBtn;
 
-    public ClickGuiScreen() {
+    public ConfigScreen() {
         super(Component.literal("Red Utils"));
 
         // 1. Initialize RootPanel with AbsPanel to support absolute free-dragging
@@ -47,6 +54,26 @@ public class ClickGuiScreen extends Screen {
             return;
         });
         rootPanel.add(themesBtn);
+
+        rootPanel.add(new ButtonWidget("Test Input", 80, 20, () -> {
+            TextInputPopup content = new TextInputPopup("Enter name...", text -> {
+                net.redct.client.RedUtilsClient.LOGGER.info("User confirmed: " + text);
+            });
+
+            // 2. Wrap it in a window
+            WindowWidget popupWindow = new WindowWidget("Rename", 0, 0, content);
+
+            // 3. Calculate the center of the screen
+            int screenW = Minecraft.getInstance().getWindow().getGuiScaledWidth();
+            int screenH = Minecraft.getInstance().getWindow().getGuiScaledHeight();
+            net.redct.client.utils.Utils.Vec2 pos = net.redct.client.utils.GuiUtils.centerWindow(
+                    screenW, screenH, popupWindow.getWidth(), popupWindow.getHeight()
+            );
+
+            // 4. Move the window to the center and display it
+            popupWindow.setPosition(pos.x(), pos.y());
+            RootPanel.getInstance().addOverlay(popupWindow);
+        }));
     }
 
     // Calls when created and each time it resizes
@@ -108,6 +135,23 @@ public class ClickGuiScreen extends Screen {
     @Override
     public boolean isInGameUi() {
         return true;
+    }
+
+
+    @Override
+    public boolean keyPressed(KeyEvent event) {
+        // 1. Let our custom widgets handle typing or popup-closing first
+        if (rootPanel.keyPressed(event)) {
+            return true;
+        }
+        // 2. Fall back to Vanilla behavior (e.g., closing the menu if Esc is pressed and no popups are open)
+        return super.keyPressed(event);
+    }
+
+    @Override
+    public boolean charTyped(CharacterEvent event) {
+        if (rootPanel.charTyped(event)) return true;
+        return super.charTyped(event);
     }
 
     @Override

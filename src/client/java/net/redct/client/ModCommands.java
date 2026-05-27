@@ -2,7 +2,7 @@ package net.redct.client;
 
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
-import net.redct.client.gui.config.ClickGuiScreen;
+import net.redct.client.gui.config.ConfigScreen;
 import net.redct.client.gui.hud.impl.HudEditorScreen;
 import net.redct.client.utils.Utils;
 
@@ -17,7 +17,7 @@ public class ModCommands {
                                 var client = context.getSource().getClient();
                                 client.execute(() -> {
                                     if (client.screen == null) {
-                                        client.setScreen(new ClickGuiScreen());
+                                        client.setScreen(new ConfigScreen());
                                     }
                                 });
                                 return 1;
