@@ -6,14 +6,11 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.redct.client.config.ConfigManager;
-import net.redct.client.config.ProfileManager;
-import net.redct.client.config.ThemeManager;
 import net.redct.client.gui.widget.AbsPanel;
 import net.redct.client.gui.widget.RootPanel;
 import net.redct.client.gui.widget.VPanel;
 import net.redct.client.gui.widget.impl.IconButtonWidget;
 import net.redct.client.gui.widget.impl.ModuleWidget;
-import net.redct.client.gui.widget.impl.SelectorPanelWidget;
 import net.redct.client.gui.widget.impl.WindowWidget;
 import net.redct.client.module.Category;
 import net.redct.client.module.Module;
@@ -42,20 +39,12 @@ public class ClickGuiScreen extends Screen {
 
         // 3. Create the buttons (but position them later in init())
         this.profilesBtn = new IconButtonWidget(PROFILES_ICON, 16, 16, () -> {
-            openManagerPopup("Profiles Manager", new SelectorPanelWidget(
-                    ProfileManager::getAvailableProfiles,
-                    ProfileManager::getActiveProfileName,
-                    ProfileManager::selectProfile
-            ));
+            return;
         });
         rootPanel.add(profilesBtn);
 
         this.themesBtn = new IconButtonWidget(THEMES_ICON, 16, 16, () -> {
-            openManagerPopup("Themes Manager", new SelectorPanelWidget(
-                    ThemeManager::getAvailableThemes,
-                    ThemeManager::getActiveThemeName,
-                    ThemeManager::selectTheme
-            ));
+            return;
         });
         rootPanel.add(themesBtn);
     }
@@ -78,13 +67,6 @@ public class ClickGuiScreen extends Screen {
         int profilesX = themesX;
         int profilesY = themesY - btnSize - gap;
         profilesBtn.setPosition(profilesX, profilesY);
-    }
-
-    private void openManagerPopup(String title, SelectorPanelWidget panel) {
-        int centerX = this.width / 2;
-        int centerY = this.height / 2;
-        WindowWidget popupWindow = new WindowWidget(title, centerX, centerY, panel);
-        rootPanel.addOverlay(popupWindow);
     }
 
     private void addCategoryWindow(Category category, int x, int y) {

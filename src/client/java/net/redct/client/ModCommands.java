@@ -3,7 +3,7 @@ package net.redct.client;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.redct.client.gui.config.ClickGuiScreen;
-import net.redct.client.gui.hud.HudEditorScreen;
+import net.redct.client.gui.hud.impl.HudEditorScreen;
 import net.redct.client.utils.Utils;
 
 public class ModCommands {

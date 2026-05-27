@@ -1,4 +1,4 @@
-package net.redct.client.gui.hud;
+package net.redct.client.gui.hud.impl;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
