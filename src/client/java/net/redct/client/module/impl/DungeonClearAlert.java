@@ -7,11 +7,11 @@ import net.redct.client.utils.GuiTextUtils;
 import net.redct.client.gui.hud.HudManager;
 import net.redct.client.module.Category;
 import net.redct.client.module.Module;
-import net.redct.client.utils.DungeonSession;
+import net.redct.client.utils.dungeon.DungeonSession;
 import net.redct.client.utils.Utils;
 
 import static net.redct.client.utils.GuiTextUtils.sendTitle;
-import static net.redct.client.utils.DungeonUtils.*;
+import static net.redct.client.utils.dungeon.DungeonUtils.*;
 
 
 public class DungeonClearAlert extends Module {
@@ -83,7 +83,7 @@ public class DungeonClearAlert extends Module {
         return true;
     }
 
-    // TODO: Move to utils?
+    // TODO: Move to utils? maybe make an even, and subscribe in utils
     private static void updateAllRoomStatus(DungeonSession session, byte[] mapColors, int playerX, int playerY){
         boolean changed = false;
         Room currentRoom = getRoom(session, playerX, playerY);
@@ -105,7 +105,7 @@ public class DungeonClearAlert extends Module {
     private static void noticePlayerStatusChange(Status status){
         Utils.playLocalClientSound();
 
-        String format = ""; //BOLD
+        String format = "";
         if (status == Status.COMPLETED){
             format = "§a"; //Green
         }

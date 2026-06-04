@@ -2,7 +2,7 @@ package net.redct.client.gui.widget;
 
 public class HPanel extends Panel {
     @Override
-    public void layout() {
+    public void recalculateLayout() {
         int currentX = this.x;
         int maxHeight = 0;
 

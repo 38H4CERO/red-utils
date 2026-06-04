@@ -2,7 +2,7 @@ package net.redct.client.gui.widget;
 
 public class VPanel extends Panel {
     @Override
-    public void layout() {
+    public void recalculateLayout() {
         int currentY = this.y;
         int maxWidth = 0;
 

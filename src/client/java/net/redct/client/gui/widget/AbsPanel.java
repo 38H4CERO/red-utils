@@ -2,7 +2,7 @@ package net.redct.client.gui.widget;
 
 public class AbsPanel extends Panel {
     @Override
-    public void layout() {
+    public void recalculateLayout() {
     }
 
     @Override

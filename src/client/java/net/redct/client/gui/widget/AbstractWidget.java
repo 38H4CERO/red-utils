@@ -30,10 +30,9 @@ public abstract class AbstractWidget implements Widget {
     @Override public Panel getParent() { return parent; }
     @Override public void setParent(Panel parent) { this.parent = parent; }
 
-    // 2. Bubble up layout changes to the parent containers
     public void revalidate() {
         if (parent != null) {
-            parent.layout();      // Force parent to realign its children
+            parent.recalculateLayout();      // Force parent to realign its children
             parent.revalidate();  // Ask parent to tell its parent, and so on
         }
     }

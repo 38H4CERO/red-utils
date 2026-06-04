@@ -7,8 +7,7 @@ import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.redct.client.RedUtilsClient;
 import net.redct.client.module.impl.DungeonClearAlert;
-import net.redct.client.utils.DungeonSession;
-import net.redct.client.utils.DungeonUtils;
+import net.redct.client.utils.dungeon.DungeonSession;
 import net.redct.client.utils.Utils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -20,7 +19,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import static net.redct.client.module.ModuleManager.isModuleEnabled;
-import static net.redct.client.utils.DungeonUtils.MAP_SIZE;
+import static net.redct.client.utils.dungeon.DungeonUtils.MAP_SIZE;
 
 @Mixin(ClientPacketListener.class)
 public class MapDataMixin {

@@ -27,13 +27,13 @@ public class WindowWidget extends Panel {
             this.add(this.content);
         }
 
-        layout();
+        recalculateLayout();
     }
 
     @Override
-    public void layout() {
+    public void recalculateLayout() {
         if (content != null) {
-            if (content instanceof Panel panel) panel.layout();
+            if (content instanceof Panel panel) panel.recalculateLayout();
             content.setPosition(this.x, this.y + UILayout.FRAME_HEADER_HEIGHT);
             this.height = UILayout.FRAME_HEADER_HEIGHT + content.getHeight();
             this.width = content.getWidth() > 0 ? content.getWidth() : UILayout.FRAME_WIDTH;
@@ -45,7 +45,7 @@ public class WindowWidget extends Panel {
         if (isDragging) {
             this.x = mouseX - this.dragX;
             this.y = mouseY - this.dragY;
-            layout(); // Move children with the window
+            recalculateLayout(); // Move children with the window
         }
 
         // Draw Window Header

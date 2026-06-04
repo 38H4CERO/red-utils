@@ -1,11 +1,13 @@
-package net.redct.client.utils;
+package net.redct.client.utils.dungeon;
+
+import net.redct.client.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static net.redct.client.utils.DungeonUtils.FLOOR_ROOM_SIZE;
-import static net.redct.client.utils.DungeonUtils.getTopLeft;
+import static net.redct.client.utils.dungeon.DungeonUtils.FLOOR_ROOM_SIZE;
+import static net.redct.client.utils.dungeon.DungeonUtils.getTopLeft;
 
 public class DungeonSession {
     private static DungeonSession instance;

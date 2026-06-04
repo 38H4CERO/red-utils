@@ -4,7 +4,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.redct.client.module.Module;
 import net.redct.client.module.ModuleManager;
-import net.redct.client.utils.DungeonSession;
+import net.redct.client.utils.dungeon.DungeonSession;
 import net.redct.client.utils.Utils;
 
 public class EventSubscriber {

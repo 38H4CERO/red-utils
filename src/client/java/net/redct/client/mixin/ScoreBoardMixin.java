@@ -3,7 +3,7 @@ package net.redct.client.mixin;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.redct.client.module.ModuleManager;
-import net.redct.client.utils.DungeonUtils;
+import net.redct.client.utils.dungeon.DungeonUtils;
 import net.redct.client.utils.ScoreboardUtils;
 import net.redct.client.utils.Utils;
 import org.spongepowered.asm.mixin.Mixin;

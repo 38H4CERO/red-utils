@@ -12,29 +12,16 @@ public class ColorSetting extends Setting {
     public void setColor(int color) { this.color = color; }
 
     // Helpers to extract components
-    public float getHue() {
-        float[] hsb = java.awt.Color.RGBtoHSB(
+    public float[] getHSB(){
+        return java.awt.Color.RGBtoHSB(
                 (color >> 16) & 0xFF,
                 (color >> 8)  & 0xFF,
                 color        & 0xFF, null);
-        return hsb[0];
     }
 
-    public float getSaturation() {
-        float[] hsb = java.awt.Color.RGBtoHSB(
-                (color >> 16) & 0xFF,
-                (color >> 8)  & 0xFF,
-                color        & 0xFF, null);
-        return hsb[1];
-    }
-
-    public float getBrightness() {
-        float[] hsb = java.awt.Color.RGBtoHSB(
-                (color >> 16) & 0xFF,
-                (color >> 8)  & 0xFF,
-                color        & 0xFF, null);
-        return hsb[2];
-    }
+    public float getHue()        { return getHSB()[0]; }
+    public float getSaturation() { return getHSB()[1]; }
+    public float getBrightness() { return getHSB()[2]; }
 
     public int getAlpha() { return (color >> 24) & 0xFF; }
 

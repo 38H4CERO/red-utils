@@ -18,21 +18,21 @@ public abstract class Panel extends AbstractWidget {
     public void add(Widget widget) {
         children.add(widget);
         widget.setParent(this);
-        layout();
+        recalculateLayout();
     }
 
     public void remove(Widget widget) {
         children.remove(widget);
         widget.setParent(null);
-        layout();
+        recalculateLayout();
     }
 
-    public abstract void layout();
+    public abstract void recalculateLayout();
 
     @Override
     public void setPosition(int x, int y) {
         super.setPosition(x, y);
-        layout();
+        recalculateLayout();
     }
 
     @Override

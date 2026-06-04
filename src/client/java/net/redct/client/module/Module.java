@@ -14,7 +14,6 @@ public abstract class Module {
     private final String id;
     private final Category category;
     private boolean enabled = false;
-    private boolean expanded = false;
     private final List<Setting> settings = new ArrayList<>();
     private final List<Setting> settingsView = Collections.unmodifiableList(settings);
 
@@ -37,14 +36,6 @@ public abstract class Module {
         return !settings.isEmpty();
     }
 
-    // ── Expanded state ────────────────────────────────────────
-    public boolean isExpanded() {
-        return expanded;
-    }
-
-    public void toggleExpanded() {
-        if (hasSettings()) expanded = !expanded;
-    }
 
     // ── Getters ──────────────────────────────────────────────
     public String getName()         { return name; }

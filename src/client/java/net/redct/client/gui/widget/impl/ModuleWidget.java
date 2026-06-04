@@ -13,10 +13,10 @@ import net.redct.client.gui.config.UILayout;
 import net.redct.client.module.Module;
 import net.redct.client.utils.GuiUtils;
 
-import java.util.function.Consumer;
-
 public class ModuleWidget extends Panel {
     private final Module module;
+
+    private boolean expanded = false;
 
     public ModuleWidget(Module module) {
         this.module = module;
@@ -36,8 +36,8 @@ public class ModuleWidget extends Panel {
     }
 
     @Override
-    public void layout() {
-        if (!module.isExpanded()) {
+    public void recalculateLayout() {
+        if (!expanded) {
             this.height = UILayout.MODULE_HEIGHT;
             return;
         }
@@ -68,7 +68,7 @@ public class ModuleWidget extends Panel {
         graphics.text(font, module.getName(), x + UILayout.TEXT_X_OFFSET, y + UILayout.TEXT_Y_OFFSET, textColor);
 
         // 2. Render the child setting widgets only if expanded
-        if (module.isExpanded()) {
+        if (expanded) {
             for (Widget child : children) {
                 if (isChildVisible(child)) {
                     child.render(graphics, font, mouseX, mouseY);
@@ -85,15 +85,15 @@ public class ModuleWidget extends Panel {
                 module.toggle();
                 return true;
             } else if (button == 1) {
-                module.toggleExpanded();
-                layout();
+                if (module.hasSettings()) expanded = !expanded;
+                recalculateLayout();
                 revalidate();
                 return true;
             }
         }
 
         // Forward click down to the settings if expanded
-        if (module.isExpanded()) {
+        if (expanded) {
             for (int i = children.size() - 1; i >= 0; i--) {
                 Widget child = children.get(i);
                 if (isChildVisible(child) && child.mouseClicked(mouseX, mouseY, button)) {
