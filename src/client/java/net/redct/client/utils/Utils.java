@@ -21,6 +21,7 @@ public class Utils {
     }
     private static final Pattern COLOR_PATTERN = Pattern.compile("(?i)§.");
 
+    //[19:33:24] [ENTITY] type=armor_stand | name=Wither Key | customName=Wither Key | pos=[-123.0,68.6,-82.0]
     public static String trimFormatedText(String rawText){
         if (rawText == null) return "";
 
@@ -43,9 +44,7 @@ public class Utils {
     /*
       mc.player.playSound(SoundEvents.GHAST_SCREAM, volume, 0.75F);
       mc.player.playSound(SoundEvents.ARROW_HIT_PLAYER, volume, 1.5F);
-            mc.player.playSound(SoundEvents.PUFFER_FISH_BLOW_UP, volume, pitch);
-
-
+      mc.player.playSound(SoundEvents.PUFFER_FISH_BLOW_UP, volume, pitch);
      */
     public static void playLocalClientSound() {
         Minecraft mc = Minecraft.getInstance();
@@ -72,9 +71,6 @@ public class Utils {
             }
             return (this.x == p.x && this.y == p.y);
         }
-
     }
-
-
 
 }

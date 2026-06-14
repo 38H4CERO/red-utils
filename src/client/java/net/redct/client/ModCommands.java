@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.redct.client.gui.config.ConfigScreen;
 import net.redct.client.gui.hud.impl.HudEditorScreen;
+import net.redct.client.utils.CustomRenderPipeline;
 import net.redct.client.utils.Utils;
 
 public class ModCommands {

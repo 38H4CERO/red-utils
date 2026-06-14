@@ -20,7 +20,7 @@ public class SliderSetting extends Setting {
 
     public void setValue(double value) {
         double temp = Math.clamp(value, min, max);
-        this.value = Math.floor(temp * 100) / 100;;
+        this.value = Math.floor(temp * 100) / 100;
     }
 
 }

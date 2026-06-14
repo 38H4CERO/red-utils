@@ -7,6 +7,8 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.redct.client.gui.hud.HudInterface;
 
+import static net.redct.client.utils.ColorUtils.makeARGB;
+
 
 public class GuiTextUtils implements HudInterface {
     private String id;
@@ -104,16 +106,7 @@ public class GuiTextUtils implements HudInterface {
      * @param alpha 0-255, 0xFF for opaque
      */
     public void setColor(int RGB, int alpha) {
-        this.color = ((alpha & 0xFF) << 24) | (RGB & 0x00FFFFFF);
-    }
-
-    public static String colorToHex(int color) {
-        return String.format("0x%08X", color);
-    }
-
-    public static int hexToColor(String hex) {
-        String clean = hex.replace("0x", "").replace("#", "");
-        return (int) Long.parseLong(clean, 16);
+        this.color = makeARGB(RGB, alpha);
     }
 
     public static void sendTitle(String title, String subtitle) {

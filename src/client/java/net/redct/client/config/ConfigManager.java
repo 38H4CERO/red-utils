@@ -10,8 +10,8 @@ import net.redct.client.gui.hud.HudManager;
 import net.redct.client.module.ModuleManager;
 import net.redct.client.module.Module;
 
-import static net.redct.client.utils.GuiTextUtils.colorToHex;
-import static net.redct.client.utils.GuiTextUtils.hexToColor;
+import static net.redct.client.utils.ColorUtils.colorToHex;
+import static net.redct.client.utils.ColorUtils.hexToColor;
 
 import java.io.File;
 import java.io.FileReader;

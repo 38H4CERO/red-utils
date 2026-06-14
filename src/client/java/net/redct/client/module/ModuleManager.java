@@ -6,11 +6,17 @@ import net.redct.client.module.impl.*;
 
 public class ModuleManager {
     private static final List<Module> modules = new ArrayList<>();
+    private static boolean debugMode = true;
 
     public static void init() {
         register(new ExampleTextRender());
         register(new DungeonClearAlert());
+        register(new LineToKey());
         register(new TestModule());
+
+        if (debugMode){
+            register(new EntityDebugModule());
+        }
     }
 
     public static void register(Module module) {

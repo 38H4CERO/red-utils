@@ -4,7 +4,8 @@ public enum Category {
     RENDER("Render"),
     DUNGEONS("Dungeons"),
     KUUDRA("Kuudra"),
-    MISC("Misc");
+    MISC("Misc"),
+    DEBUG("Debug");
 
     public final String name;
 

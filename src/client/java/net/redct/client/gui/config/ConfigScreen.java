@@ -43,6 +43,7 @@ public class ConfigScreen extends Screen {
         addCategoryWindow(Category.KUUDRA, 140, 20);
         addCategoryWindow(Category.RENDER, 260, 20);
         addCategoryWindow(Category.MISC, 380, 20);
+        addCategoryWindow(Category.DEBUG, 500, 20);
 
         // 3. Create the buttons (but position them later in init())
         this.profilesBtn = new IconButtonWidget(PROFILES_ICON, 16, 16, () -> {

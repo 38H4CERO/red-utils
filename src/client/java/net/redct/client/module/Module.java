@@ -1,5 +1,6 @@
 package net.redct.client.module;
 
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.redct.client.config.ConfigManager;
@@ -56,4 +57,6 @@ public abstract class Module {
     public void onEnable() {}
     public void onDisable() {}
     public void onTick() {}
+
+    public void onWorldRender(LevelRenderContext context) {}
 }

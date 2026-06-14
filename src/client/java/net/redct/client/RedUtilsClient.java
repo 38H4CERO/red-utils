@@ -5,6 +5,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.redct.client.config.ConfigManager;
 import net.redct.client.gui.hud.HudManager;
 import net.redct.client.module.ModuleManager;
+import net.redct.client.utils.CustomRenderPipeline;
 import net.redct.client.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,5 +27,7 @@ public class RedUtilsClient implements ClientModInitializer {
 		ConfigManager.load();
 		EventSubscriber.registerToEvents();
 		ModCommands.register();
+
+		//new CustomRenderPipeline().makeWaypoint();
 	}
 }
