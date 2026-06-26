@@ -1,7 +1,6 @@
 plugins {
 	id 'net.fabricmc.fabric-loom' version "${loom_version}"
 	id 'maven-publish'
-    id 'org.jetbrains.kotlin.jvm'
 }
 
 version = project.mod_version
@@ -32,13 +31,10 @@ loom {
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	
 	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	runtimeOnly("me.djtheredstoner:DevAuth-fabric:${project.devauth_version}")
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-
 }
 
 tasks.withType(ProcessResources).configureEach {
@@ -82,7 +78,4 @@ publishing {
 		// The repositories here will be used for publishing your artifact, not for
 		// retrieving dependencies.
 	}
-}
-kotlin {
-    jvmToolchain(25)
 }
