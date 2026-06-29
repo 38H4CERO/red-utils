@@ -42,12 +42,15 @@ public class EventSubscriber {
 
     private static void onWorldRenderEVENT() {
         LevelRenderEvents.END_MAIN.register(context -> {
+            LineToBlock.render(context);
+            /**
             for (Module module : ModuleManager.getModules()) {
                 if (module.isEnabled()) {
                     module.onWorldRender(context);
                 }
             }
-            //context.bufferSource().endBatch();
+             */
+            context.bufferSource().endBatch();
         });
     }
 }
