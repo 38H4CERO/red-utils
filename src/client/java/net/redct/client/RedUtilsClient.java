@@ -27,6 +27,7 @@ public class RedUtilsClient implements ClientModInitializer {
 		ConfigManager.load();
 		EventSubscriber.registerToEvents();
 		ModCommands.register();
+		TracerRenderer.getInstance().register();
 
 		//new CustomRenderPipeline().makeWaypoint();
 	}
