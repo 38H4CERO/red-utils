@@ -2,11 +2,10 @@ package net.redct.client;
 
 import net.fabricmc.api.ClientModInitializer;
 
+import net.minecraft.world.phys.Vec3;
 import net.redct.client.config.ConfigManager;
 import net.redct.client.gui.hud.HudManager;
 import net.redct.client.module.ModuleManager;
-import net.redct.client.utils.CustomRenderPipeline;
-import net.redct.client.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,8 +26,8 @@ public class RedUtilsClient implements ClientModInitializer {
 		ConfigManager.load();
 		EventSubscriber.registerToEvents();
 		ModCommands.register();
-		TracerRenderer.getInstance().register();
+		new TracerRenderer().register();
+		TracerRenderer.setTarget(new Vec3(8, -60, 8));
 
-		//new CustomRenderPipeline().makeWaypoint();
 	}
 }
