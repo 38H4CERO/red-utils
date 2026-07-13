@@ -9,10 +9,9 @@ public class ModuleManager {
     private static boolean debugMode = true;
 
     public static void init() {
+        // TODO: for module in list = register
         register(new ExampleTextRender());
         register(new DungeonClearAlert());
-        register(new LineToKey());
-        register(new TestModule());
 
         if (debugMode){
             register(new EntityDebugModule());

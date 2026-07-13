@@ -3,10 +3,8 @@
 	"package": "net.redct.client.mixin",
 	"compatibilityLevel": "JAVA_25",
 	"client": [
-		"ExampleClientMixin",
 		"MapDataMixin",
-		"ScoreBoardMixin",
-		"GameRendererMixin"
+		"ScoreBoardMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

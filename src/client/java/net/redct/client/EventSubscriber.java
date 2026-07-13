@@ -14,7 +14,6 @@ public class EventSubscriber {
         onServerConnectEVENT();
         onServerDisconnectEVENT();
         onTickEVENT();
-        onWorldRenderEVENT();
     }
 
     private static void onServerConnectEVENT() {
@@ -37,19 +36,6 @@ public class EventSubscriber {
                     module.onTick();
                 }
             }
-        });
-    }
-
-    private static void onWorldRenderEVENT() {
-        LevelRenderEvents.END_MAIN.register(context -> {
-            /**
-            for (Module module : ModuleManager.getModules()) {
-                if (module.isEnabled()) {
-                    module.onWorldRender(context);
-                }
-            }
-             */
-            context.bufferSource().endBatch();
         });
     }
 }

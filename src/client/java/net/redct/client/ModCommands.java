@@ -37,7 +37,6 @@ public class ModCommands {
         // ru: Config open
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, buildContext) -> {dispatcher.register(
                     ClientCommands.literal("test").executes(context -> {
-                        //TracerRenderer.setTarget(new Vec3(8, -60, 8));
                         Utils.playLocalClientSound();
                                 return 0;
                     }));
