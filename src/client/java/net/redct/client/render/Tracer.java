@@ -11,7 +11,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionContext;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MappableRingBuffer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.rendertype.RenderType;
@@ -19,6 +18,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.phys.Vec3;
 import net.redct.client.RedUtilsClient;
+import org.jetbrains.annotations.UnknownNullability;
 import org.joml.*;
 import org.lwjgl.system.MemoryUtil;
 
@@ -45,12 +45,11 @@ public class Tracer {
         lines.clear();
         // Access data from the world or anything here in the extraction phase.
         // You can only access the (immutable and thread safe) render state in the drawing phase.
+        Camera cam = context.camera();
 
-        Camera cam = Minecraft.getInstance().gameRenderer.getMainCamera();
-        //Vec3 source = new Vec3(cam.position().x() + 0.4f, cam.position().y() + 0.4f, cam.position().z() + 0.4f);
-        //Vec3 source = new Vec3(context.camera().position().x(), context.camera().position().y()+1,context.camera().position().z()+1);
-        Vec3 source = new Vec3(0, 0, 0);
-        lines.add(new Line(source, new Vec3(0,10,10), 4.0f, ARGB.color(255,0,255, 255)));
+        Vec3 source = cam.position().add(CamDelta(cam));
+
+        lines.add(new Line(source, new Vec3(0,10,10), 3.0f, ARGB.color(255,255,0, 255)));
     }
 
     // Render states should be immutable, thread safe, and fast to create.
@@ -65,17 +64,12 @@ public class Tracer {
     private MappableRingBuffer vertexBuffer;
 
     public void renderAndDrawLines(LevelRenderContext context) {
-        for (Line line: lines){
-            renderTracer(context, line);
-        }
+        if (lines.isEmpty()) return;
 
-        drawTracer(Minecraft.getInstance(), TRACER);
-    }
-
-    private void renderTracer(LevelRenderContext context, Line line) {
         PoseStack matrices = context.poseStack();
         Vec3 camera = context.levelState().cameraRenderState.pos;
 
+        // 1. Shift the matrix to true world origin
         matrices.pushPose();
         matrices.translate(-camera.x, -camera.y, -camera.z);
 
@@ -83,15 +77,23 @@ public class Tracer {
             this.buffer = new BufferBuilder(ALLOCATOR, TRACER.getVertexFormatMode(), TRACER.getVertexFormat());
         }
 
-        this.renderLine(matrices.last().pose(), this.buffer,
-                line.source(), line.target(), line.width(), line.argb()
-        );
+        Matrix4fc positionMatrix = matrices.last().pose();
+
+
+        // 2. Loop through all lines
+        for (Line line : lines) {
+            this.renderLine(positionMatrix, this.buffer, line.source(), line.target(), line.width(), line.argb());
+        }
 
         matrices.popPose();
+
+        drawTracer(Minecraft.getInstance(), TRACER);
+
     }
 
+
     private void renderLine(Matrix4fc positionMatrix, BufferBuilder buffer, Vec3 source, Vec3 target, float width, int color) {
-// Calculate normal for line thickness orientation
+        // Calculate normal for line thickness orientation
         float dx = (float) (target.x() - source.x());
         float dy = (float) (target.y() - source.y());
         float dz = (float) (target.z() - source.z());
@@ -188,6 +190,11 @@ public class Tracer {
         }
 
         builtBuffer.close();
+    }
+
+    private static Vec3 CamDelta(Camera cam) {
+        Vector3fc forward = cam.forwardVector();
+        return new Vec3(forward.x(), forward.y(), forward.z());
     }
 
     public void close() {
