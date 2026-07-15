@@ -26,5 +26,8 @@ public class RedUtilsClient implements ClientModInitializer {
 		ConfigManager.load();
 		EventSubscriber.registerToEvents();
 		ModCommands.register();
+
+		new TracerRender().register();
+		TracerRender.setTarget(new Vec3(8, -60, 8));
 	}
 }
