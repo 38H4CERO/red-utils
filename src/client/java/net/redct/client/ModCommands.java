@@ -37,8 +37,7 @@ public class ModCommands {
         // ru: Config open
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, buildContext) -> {dispatcher.register(
                     ClientCommands.literal("test").executes(context -> {
-                        Utils.playLocalClientSound();
-                                return 0;
+                        return 1;
                     }));
         });
 
