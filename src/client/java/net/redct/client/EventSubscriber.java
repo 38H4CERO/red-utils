@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.redct.client.module.Module;
 import net.redct.client.module.ModuleManager;
+import net.redct.client.render.Tracer;
 import net.redct.client.utils.dungeon.DungeonSession;
 import net.redct.client.utils.Utils;
 
@@ -14,6 +15,7 @@ public class EventSubscriber {
         onServerConnectEVENT();
         onServerDisconnectEVENT();
         onTickEVENT();
+        onLevelRenderEVENT();
     }
 
     private static void onServerConnectEVENT() {
@@ -37,5 +39,16 @@ public class EventSubscriber {
                 }
             }
         });
+    }
+
+    private static void onLevelRenderEVENT(){
+        Tracer tracer = Tracer.getInstance();
+        LevelRenderEvents.END_EXTRACTION.register(context -> {
+            tracer.extractLine(context);
+        });
+        LevelRenderEvents.AFTER_TRANSLUCENT_TERRAIN.register(context -> {
+            tracer.renderAndDrawLines(context);
+        });
+
     }
 }
