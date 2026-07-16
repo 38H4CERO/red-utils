@@ -1,6 +1,6 @@
 package net.redct.client.mixin;
 
-import net.redct.client.render.Tracer;
+import net.redct.client.utils.render.Tracer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

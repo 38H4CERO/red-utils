@@ -9,7 +9,7 @@ import net.redct.client.config.ConfigManager;
 import net.redct.client.gui.hud.HudInterface;
 import net.redct.client.gui.hud.HudManager;
 import net.redct.client.module.Module;
-import net.redct.client.utils.GuiTextUtils;
+import net.redct.client.utils.render.GuiTextUtils;
 
 import java.util.List;
 

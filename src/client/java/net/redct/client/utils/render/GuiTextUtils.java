@@ -1,4 +1,4 @@
-package net.redct.client.utils;
+package net.redct.client.utils.render;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;

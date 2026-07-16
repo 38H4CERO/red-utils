@@ -1,7 +1,7 @@
 package net.redct.client.module.impl;
 
 import net.minecraft.client.Minecraft;
-import net.redct.client.utils.GuiTextUtils;
+import net.redct.client.utils.render.GuiTextUtils;
 import net.redct.client.gui.hud.HudManager;
 import net.redct.client.module.Category;
 import net.redct.client.module.Module;

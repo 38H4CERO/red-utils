@@ -1,4 +1,4 @@
-package net.redct.client.render;
+package net.redct.client.utils.render;
 
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
@@ -16,13 +16,14 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import net.redct.client.RedUtilsClient;
-import org.jetbrains.annotations.UnknownNullability;
 import org.joml.*;
 import org.lwjgl.system.MemoryUtil;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Tracer {
     private static Tracer instance;
@@ -35,26 +36,77 @@ public class Tracer {
 
     private static final List<Line> lines = new ArrayList<>();
 
+    private static final Map<String, AnchoredLine> anchoredLines = new ConcurrentHashMap<>();
+
+    public interface Anchor {
+        /** Current world position. */
+        Vec3 resolve(float partialTick);
+
+        /** A point that never moves. */
+        static Anchor fixed(Vec3 point) {
+            return (partialTick) -> point.add(0.5, 0, 0.5);
+        }
+
+        /**
+         * The player's camera position (camera origin + forward offset,
+         */
+        static Anchor player() {
+            return (partialTick) -> {
+                Camera cam = Minecraft.getInstance().gameRenderer.getMainCamera();
+                return cam.position().add(CamDelta(cam));
+            };
+        }
+
+        /**
+         * A moving entity's position, recomputed every frame.
+         *  Tracer does NOT check whether the entity is still alive/loaded
+         */
+        static Anchor entity(Entity entity) {
+            //return entity::position
+            return (partialTick) -> entity.getPosition(partialTick).add(0, entity.getEyeHeight(), 0);
+        }
+    }
+
+
+
+    public static String setLine(Anchor source, Anchor target, float width, int argb) {
+        return setLine(UUID.randomUUID().toString(), source, target, width, argb);
+    }
+
+
+    public static String setLine(String id ,Anchor source, Anchor target, float width, int argb) {
+        anchoredLines.put(id, new AnchoredLine(source, target, width, argb));
+        return id;
+    }
+
+    public static void removeLine(String id) {
+        anchoredLines.remove(id);
+    }
+
+    public static void clearLines() {
+        anchoredLines.clear();
+    }
+
+
     public static Tracer getInstance() {
         if (instance == null) instance = new Tracer();
         return instance;
     }
 
-
+    // Access data from the world or anything here in the extraction phase.
+    // You can only access the (immutable and thread safe) render state in the drawing phase.
     public void extractLine(LevelExtractionContext context) {
         lines.clear();
-        // Access data from the world or anything here in the extraction phase.
-        // You can only access the (immutable and thread safe) render state in the drawing phase.
-        Camera cam = context.camera();
+        float partialTick = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
 
-        Vec3 source = cam.position().add(CamDelta(cam));
-
-        lines.add(new Line(source, new Vec3(0,10,10), 3.0f, ARGB.color(255,255,0, 255)));
+        for (AnchoredLine line : anchoredLines.values()) {
+            lines.add(new Line(line.source().resolve(partialTick), line.target().resolve(partialTick), line.width(), line.argb()));
+        }
     }
 
     // Render states should be immutable, thread safe, and fast to create.
     private record Line(Vec3 source, Vec3 target, float width, int argb) { }
-
+    private record AnchoredLine(Anchor source, Anchor target, float width, int argb) { }
 
     private static final ByteBufferBuilder ALLOCATOR = new ByteBufferBuilder(RenderType.SMALL_BUFFER_SIZE);
     private static final Vector4f COLOR_MODULATOR = new Vector4f(1f, 1f, 1f, 1f);

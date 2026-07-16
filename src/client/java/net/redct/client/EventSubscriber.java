@@ -1,11 +1,14 @@
 package net.redct.client;
 
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.redct.client.module.Module;
 import net.redct.client.module.ModuleManager;
-import net.redct.client.render.Tracer;
+import net.redct.client.utils.entity.EntityUtils;
+import net.redct.client.utils.entity.GlowRegistry;
+import net.redct.client.utils.render.Tracer;
 import net.redct.client.utils.dungeon.DungeonSession;
 import net.redct.client.utils.Utils;
 
@@ -16,6 +19,7 @@ public class EventSubscriber {
         onServerDisconnectEVENT();
         onTickEVENT();
         onLevelRenderEVENT();
+        onEntityLoadEVENT();
     }
 
     private static void onServerConnectEVENT() {
@@ -28,6 +32,8 @@ public class EventSubscriber {
         ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
             Utils.inHypixel = false;
             DungeonSession.end();
+            Tracer.clearLines();
+            GlowRegistry.clearGlowRegistry();
         });
     }
 
@@ -50,5 +56,26 @@ public class EventSubscriber {
             tracer.renderAndDrawLines(context);
         });
 
+    }
+
+
+    private static void onEntityLoadEVENT(){
+
+        ClientEntityEvents.ENTITY_LOAD.register( (entity, listener) -> {
+            //if (entity.getType().toShortString().contains("armor_stand")) return;
+            // TODO: Some players are loaded before they get the tag
+            // Some mobs are players
+            switch (entity.getType().toShortString()){
+                case "player":
+                    if (entity.getTeam()!= null ? entity.getTeam().getNameTagVisibility().toString().equals("ALWAYS") : false){
+                        //Tracer.setLine(Anchor.player(), Anchor.entity(entity), 3f, ARGB.white(255));
+                    }
+                    break;
+                case "armor_stand":
+                    if (entity.hasCustomName()) EntityUtils.isMob(entity.getCustomName().getString());
+                    break;
+            }
+
+        });
     }
 }
