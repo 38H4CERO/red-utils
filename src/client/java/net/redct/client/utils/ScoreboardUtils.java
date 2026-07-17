@@ -17,6 +17,7 @@ public class ScoreboardUtils {
     public static List<String> scoreboardLines = null;
 
     private static List<String> parseScoreboard (Scoreboard scoreboard, Objective sidebar){
+        // TODO: Only in world change for now, no lo necesito para nada mas que saber la isla, podria usar /locraw y solo mirar en dungeons
         List<String> scoreboardLines = new ArrayList<>();
         Collection<PlayerScoreEntry> scores = scoreboard.listPlayerScores(sidebar);
         for (PlayerScoreEntry scoreEntry : scores) {
@@ -26,7 +27,7 @@ public class ScoreboardUtils {
             Component lineComponent = PlayerTeam.formatNameForTeam(team, Component.literal(scoreHolderName));
 
             String line = trimFormatedText(lineComponent.getString());
-            if (line != ""){
+            if (!line.isEmpty()){
                 scoreboardLines.add(line);
             }
         }

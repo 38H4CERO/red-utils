@@ -6,7 +6,9 @@
 		"MapDataMixin",
 		"ScoreBoardMixin",
 		"GameRendererMixin",
-		"EntityGlowingMixin"
+		"EntityGlowingMixin",
+		"SyncedDataUpdatedMixin",
+		"EntityAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1

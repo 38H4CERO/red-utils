@@ -20,8 +20,6 @@ public class ScoreBoardMixin {
         if(!Utils.inHypixel) return;
 
         /* TODO: Maybe only check when world is un/loaded
-        *   ServerWorldEvents.LOAD: Called just after a world is loaded by a Minecraft server
-        *   ServerWorldEvents.UNLOAD: Called before a world is unloaded by a Minecraft server.
         *   https://wiki.fabricmc.net/tutorial:event_index
         * */
         ScoreboardUtils.getScoreboard();

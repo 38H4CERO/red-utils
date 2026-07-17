@@ -7,6 +7,7 @@ import net.minecraft.util.ARGB;
 import net.minecraft.world.phys.Vec3;
 import net.redct.client.gui.config.ConfigScreen;
 import net.redct.client.gui.hud.impl.HudEditorScreen;
+import net.redct.client.utils.entity.EntityManager;
 import net.redct.client.utils.render.Tracer;
 import net.redct.client.utils.render.Tracer.Anchor;
 
@@ -40,6 +41,7 @@ public class ModCommands {
         // ru: Config open
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, buildContext) -> {dispatcher.register(
                     ClientCommands.literal("test").executes(context -> {
+                        EntityManager.addMobTypeGlowing("Graveyard Zombie");
                         return 1;
                     }));
         });

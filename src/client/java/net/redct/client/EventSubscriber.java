@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.minecraft.util.ARGB;
 import net.redct.client.module.Module;
 import net.redct.client.module.ModuleManager;
+import net.redct.client.utils.entity.EntityManager;
 import net.redct.client.utils.entity.EntityUtils;
 import net.redct.client.utils.entity.GlowRegistry;
 import net.redct.client.utils.render.Tracer;
@@ -30,6 +31,9 @@ public class EventSubscriber {
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
             Utils.isOnHypixel();
             Tracer.clearLines();
+            GlowRegistry.clearGlowRegistry();
+            EntityManager.clearEnityManager();
+
         });
     }
 
@@ -39,6 +43,7 @@ public class EventSubscriber {
             DungeonSession.end();
             Tracer.clearLines();
             GlowRegistry.clearGlowRegistry();
+            EntityManager.clearEnityManager();
         });
     }
 
@@ -74,11 +79,11 @@ public class EventSubscriber {
                 case "player":
                     if (entity.getTeam()!= null ? entity.getTeam().getNameTagVisibility().toString().equals("ALWAYS") : false){
                         // TODO: shows own player
-                        Tracer.setLine(entity.getStringUUID() ,Anchor.player(), Anchor.entity(entity), 3f, ARGB.white(255));
+                        //Tracer.setLine(entity.getStringUUID() ,Anchor.player(), Anchor.entity(entity), 3f, ARGB.white(255));
                     }
                     break;
                 case "armor_stand":
-                    if (entity.hasCustomName()) EntityUtils.isMob(entity.getCustomName().getString());
+                    if (entity.hasCustomName()) EntityUtils.mobNameParse(entity.getCustomName().getString());
                     break;
             }
 

@@ -25,6 +25,7 @@ public class GlowRegistry {
         }
     }
 
+
     public static void clearGlowRegistry(){
         glowing.clear();
     }
