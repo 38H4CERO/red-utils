@@ -83,7 +83,10 @@ public class EventSubscriber {
                     }
                     break;
                 case "armor_stand":
-                    if (entity.hasCustomName()) EntityUtils.mobNameParse(entity.getCustomName().getString());
+                    if (entity.hasCustomName()){
+                        // TODO: No estoy del todo seguro si esto es mejor o peor
+                        EntityManager.onNameResolved(entity);
+                    }
                     break;
             }
 

@@ -17,19 +17,22 @@ public class EntityManager {
     private static final Set<String> glowingMobs = ConcurrentHashMap.newKeySet();
 
 
-    public static void onNameResolved(Entity entity, Component customName) {
-        if (customName == null) return;
+    //TODO: Change name to a more descriptibe one
+    public static void onNameResolved(Entity entity) {
+        if (entity.getCustomName() == null) return;
         if (!entity.getType().toShortString().equals("armor_stand")) return;
 
         UUID uuid = entity.getUUID();
+
+        // TODO: ns si meter solo los que brillan
         if (processed.contains(uuid)) return;
 
         // Regex
-        String name = EntityUtils.mobNameParse(customName.getString());
+        String name = EntityUtils.mobNameParse(entity.getCustomName().getString());
 
         if (name != null){
             if (shouldGlow(name)){
-                GlowRegistry.setGlowing(uuid, true);
+                GlowRegistry.setGlowing(entity.getId()-1, true);
             }
             if (shouldTrace(name)){
                 Tracer.setLine(uuid.toString(), Anchor.player(), Anchor.entity(entity), 3f, ARGB.white(255));
@@ -38,6 +41,7 @@ public class EntityManager {
         } else {
             //System.out.println("[LOG] no mob entity = "+ customName.getString());
         }
+
 
 
     }

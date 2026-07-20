@@ -41,7 +41,7 @@ public class ModCommands {
         // ru: Config open
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, buildContext) -> {dispatcher.register(
                     ClientCommands.literal("test").executes(context -> {
-                        EntityManager.addMobTypeGlowing("Graveyard Zombie");
+                        EntityManager.addMobTypeGlowing("Dasher Spider");
                         return 1;
                     }));
         });
