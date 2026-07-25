@@ -1,4 +1,4 @@
-package net.redct.client.mixin;
+package net.redct.client.mixin.accessor;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;

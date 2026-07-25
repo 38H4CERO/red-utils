@@ -48,13 +48,12 @@ public class EntityDebugModule extends Module {
                 //if (!EntityUtils.isMob(e.getName().getString())) return;
 
                 //GlowRegistry.setGlowing(e, true);
-                Logger.log("ENTITY", "type=%s | name=%s | customName=%s | team=%s | pass=%s/%s| pos=[%.1f,%.1f,%.1f]",
+                Logger.log("ENTITY", "type=%s | name=%s | customName=%s | team=%s | id=%s | pos=[%.1f,%.1f,%.1f]",
                         e.getType().toShortString(),
                         e.getName().getString(),
                         e.getCustomName() != null ? e.getCustomName().getString() : "null",
                         e.getTeam()!= null ? e.getTeam().getNameTagVisibility() : "null",
-                        health != -1 ? health : "null",
-                        maxHealth != -1 ? maxHealth : "null",
+                        e.getId(),
                         e.getX(), e.getY(), e.getZ()
                 );
 

@@ -1,20 +1,18 @@
 package net.redct.client.utils.entity;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.Entity;
 import net.redct.client.utils.render.Tracer;
 import net.redct.client.utils.render.Tracer.Anchor;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class EntityManager {
     private static final Set<UUID> processed = ConcurrentHashMap.newKeySet();
-    private static final ArrayList<String> trackedMobNames = new ArrayList<>();
-    private static final Set<String> glowingMobs = ConcurrentHashMap.newKeySet();
+    private static final Set<String> trackedMobNames = ConcurrentHashMap.newKeySet();
 
 
     //TODO: Change name to a more descriptibe one
@@ -52,11 +50,24 @@ public class EntityManager {
     }
 
     public static void addMobTypeGlowing(String name){
-        glowingMobs.add(name);
+        trackedMobNames.add(name);
+    }
+
+    // TODO: esto esta mal, si algo brilla seguira brillando
+    public static void removeMobTypeGlowing(String name){
+        trackedMobNames.remove(name);
+    }
+
+    public static void removeProcessedMob(UUID uuid){
+        processed.remove(uuid);
+    }
+
+    public static List<String> getTrackedNames() {
+        return List.copyOf(trackedMobNames);
     }
 
     private static boolean shouldGlow(String name){
-        return glowingMobs.contains(name);
+        return trackedMobNames.contains(name);
     }
 
     private static boolean shouldTrace(String name){

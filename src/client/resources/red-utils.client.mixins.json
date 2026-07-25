@@ -8,7 +8,7 @@
 		"GameRendererMixin",
 		"EntityGlowingMixin",
 		"SyncedDataUpdatedMixin",
-		"EntityAccessor"
+      "accessor.EntityAccessor"
 	],
 	"injectors": {
 		"defaultRequire": 1

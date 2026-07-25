@@ -2,7 +2,7 @@ package net.redct.client;
 
 import net.fabricmc.api.ClientModInitializer;
 
-import net.minecraft.world.phys.Vec3;
+import net.redct.client.commands.ModCommands;
 import net.redct.client.config.ConfigManager;
 import net.redct.client.gui.hud.HudManager;
 import net.redct.client.module.ModuleManager;

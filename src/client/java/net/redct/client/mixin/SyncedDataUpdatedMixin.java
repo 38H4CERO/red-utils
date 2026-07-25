@@ -2,6 +2,7 @@ package net.redct.client.mixin;
 
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.Entity;
+import net.redct.client.mixin.accessor.EntityAccessor;
 import net.redct.client.utils.Utils;
 import net.redct.client.utils.entity.EntityManager;
 import org.spongepowered.asm.mixin.Mixin;

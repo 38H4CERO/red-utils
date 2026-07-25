@@ -159,6 +159,7 @@ public class ConfigManager {
         }
     }
 
+    // TODO: fix path traversal etc...
     public static void saveProfile(String profileName) {
         File file = new File(PROFILE_DIR, profileName + ".json");
         saveProfile(file);

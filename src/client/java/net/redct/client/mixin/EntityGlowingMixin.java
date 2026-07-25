@@ -21,6 +21,8 @@ public class EntityGlowingMixin {
                     //cir.setReturnValue(true);
                 } else {
                     // Puede se goblins... etc y npc
+                    glow = GlowRegistry.shouldGlow(entity);
+                    cir.setReturnValue(glow);
                 }
                 break;
             default:

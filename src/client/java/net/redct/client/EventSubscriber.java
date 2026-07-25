@@ -4,14 +4,11 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
-import net.minecraft.util.ARGB;
 import net.redct.client.module.Module;
 import net.redct.client.module.ModuleManager;
 import net.redct.client.utils.entity.EntityManager;
-import net.redct.client.utils.entity.EntityUtils;
 import net.redct.client.utils.entity.GlowRegistry;
 import net.redct.client.utils.render.Tracer;
-import net.redct.client.utils.render.Tracer.Anchor;
 import net.redct.client.utils.dungeon.DungeonSession;
 import net.redct.client.utils.Utils;
 
@@ -104,7 +101,15 @@ public class EventSubscriber {
                         Tracer.removeLine(entity.getStringUUID());
                     }
                     break;
+                case "armor_stand":
+                    break;
+                default:
+                    break;
+
             }
+
+            GlowRegistry.setGlowing(entity, false);
+            EntityManager.removeProcessedMob(entity.getUUID()); // Aqui solo llegan armor stands creo
         });
     }
 
