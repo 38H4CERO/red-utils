@@ -14,7 +14,8 @@ public class EntityTrackRemoveSuggestionProvider implements SuggestionProvider<F
     @Override
     public CompletableFuture<Suggestions> getSuggestions(CommandContext<FabricClientCommandSource> context, SuggestionsBuilder builder) throws CommandSyntaxException {
         for (String mobName: EntityManager.getTrackedNames()){
-            builder.suggest(mobName);
+            String suggestion = mobName.contains(" ") ? "\"" + mobName + "\"" : mobName;
+            builder.suggest(suggestion);
         }
         return builder.buildFuture();
     }

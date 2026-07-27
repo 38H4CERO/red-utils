@@ -29,7 +29,7 @@ public class EventSubscriber {
             Utils.isOnHypixel();
             Tracer.clearLines();
             GlowRegistry.clearGlowRegistry();
-            EntityManager.clearEnityManager();
+            EntityManager.clearProcessedMobs();
 
         });
     }
@@ -40,7 +40,7 @@ public class EventSubscriber {
             DungeonSession.end();
             Tracer.clearLines();
             GlowRegistry.clearGlowRegistry();
-            EntityManager.clearEnityManager();
+            EntityManager.clearProcessedMobs();
         });
     }
 
@@ -109,7 +109,7 @@ public class EventSubscriber {
             }
 
             GlowRegistry.setGlowing(entity, false);
-            EntityManager.removeProcessedMob(entity.getUUID()); // Aqui solo llegan armor stands creo
+            EntityManager.removeProcessedMob(entity.getUUID()); // Aqui solo llegan armor stands creo (a la lista)
         });
     }
 

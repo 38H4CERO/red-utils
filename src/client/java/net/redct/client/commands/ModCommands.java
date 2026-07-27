@@ -10,6 +10,8 @@ import net.minecraft.world.phys.Vec3;
 import net.redct.client.gui.config.ConfigScreen;
 import net.redct.client.gui.hud.impl.HudEditorScreen;
 import net.redct.client.utils.entity.EntityManager;
+import net.redct.client.utils.entity.EntityUtils;
+import net.redct.client.utils.entity.GlowRegistry;
 import net.redct.client.utils.render.Tracer;
 import net.redct.client.utils.render.Tracer.Anchor;
 
@@ -44,6 +46,8 @@ public class ModCommands {
             dispatcher.register(ClientCommands.literal("track").then(ClientCommands.literal("add").then(ClientCommands.argument("name", StringArgumentType.string()).executes(context -> {
                                 String name = StringArgumentType.getString(context, "name");
                                 EntityManager.addMobTypeGlowing(name);
+                                EntityManager.clearProcessedMobs();
+                                EntityUtils.rescanLoadedArmorStands();
                                 context.getSource().sendFeedback(Component.literal("Added " + name));
                                 return 1;
                             })))
@@ -51,6 +55,7 @@ public class ModCommands {
                             .then(ClientCommands.literal("remove").then(ClientCommands.argument("name", StringArgumentType.string()).suggests(new EntityTrackRemoveSuggestionProvider()).executes(context -> {
                                 String name = StringArgumentType.getString(context, "name");
                                 EntityManager.removeMobTypeGlowing(name);
+                                GlowRegistry.clearGlowRegistry();
                                 context.getSource().sendFeedback(Component.literal("Removed " + name));
                                 return 1;
                             })))

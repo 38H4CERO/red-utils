@@ -1,10 +1,14 @@
 package net.redct.client.utils.entity;
 
+import net.minecraft.world.entity.Entity;
 import net.redct.client.utils.Logger;
 import net.redct.client.utils.dungeon.DungeonSession;
 
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static net.redct.client.utils.entity.EntityManager.onNameResolved;
 
 public class EntityUtils {
     //private static final String regex = "\\[Lv(?<level>\\d+)\\]\\s+(?:\\p{Co}+\\s*)?(?<name>[A-Za-z]+(?:\\s+[A-Za-z]+)*)\\s+(?<current>[\\d,]+)/(?<max>[\\d,]+)❤";
@@ -27,11 +31,31 @@ public class EntityUtils {
     public static String mobNameParse(String custonName){
         Matcher match = MOB_NAME_PATTERN.matcher(custonName);
         if (match.find()) {
-            return  match.group("name");
+            String name = match.group("name");
+            String icon = match.group("icons");
+
+            StringBuilder iconsHex = new StringBuilder();
+            icon.codePoints().forEach(codepoint -> {
+                if (!iconsHex.isEmpty()) iconsHex.append(' ');
+                iconsHex.append("U+").append(Integer.toHexString(codepoint).toUpperCase());
+            });
+
+            Logger.log("MOB", "%s, %s", name, iconsHex);
+            return name;
         }
         //Logger.log("REGEX", "%s", custonName);
         //throw new RuntimeException();
         return null;
+    }
+
+    public static void rescanLoadedArmorStands() {
+        var level = net.minecraft.client.Minecraft.getInstance().level;
+        if (level == null) return;
+        for (Entity entity : level.entitiesForRendering()) {
+            if (entity.getType().toShortString().equals("armor_stand") && entity.hasCustomName()) {
+                onNameResolved(entity);
+            }
+        }
     }
 
 

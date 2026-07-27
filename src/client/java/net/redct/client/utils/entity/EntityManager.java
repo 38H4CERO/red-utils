@@ -44,9 +44,8 @@ public class EntityManager {
 
     }
 
-    public static void clearEnityManager(){
+    public static void clearProcessedMobs(){
         processed.clear();
-        //glowingMobs.clear();
     }
 
     public static void addMobTypeGlowing(String name){
