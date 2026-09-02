@@ -52,6 +52,14 @@ public class ModCommands {
                                 return 1;
                             })))
 
+                            .then(ClientCommands.literal("entity").then(ClientCommands.argument("name", StringArgumentType.string()).executes(context -> {
+                                String name = StringArgumentType.getString(context, "name");
+                                EntityManager.addEntityTypeGlowing(name);
+                                EntityManager.clearProcessedMobs();
+                                context.getSource().sendFeedback(Component.literal("Added " + name));
+                                return 1;
+                            })))
+
                             .then(ClientCommands.literal("remove").then(ClientCommands.argument("name", StringArgumentType.string()).suggests(new EntityTrackRemoveSuggestionProvider()).executes(context -> {
                                 String name = StringArgumentType.getString(context, "name");
                                 EntityManager.removeMobTypeGlowing(name);
@@ -69,6 +77,7 @@ public class ModCommands {
                                 }
                                 return 1;
                             }))
+
 
             );
         });

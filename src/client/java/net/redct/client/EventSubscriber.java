@@ -85,6 +85,9 @@ public class EventSubscriber {
                         EntityManager.onNameResolved(entity);
                     }
                     break;
+                default:
+                    EntityManager.onNameResolved(entity);
+                    break;
             }
 
         });

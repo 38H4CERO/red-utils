@@ -34,13 +34,16 @@ public class EntityUtils {
             String name = match.group("name");
             String icon = match.group("icons");
 
-            StringBuilder iconsHex = new StringBuilder();
-            icon.codePoints().forEach(codepoint -> {
-                if (!iconsHex.isEmpty()) iconsHex.append(' ');
-                iconsHex.append("U+").append(Integer.toHexString(codepoint).toUpperCase());
-            });
+            if (icon != null){
+                StringBuilder iconsHex = new StringBuilder();
+                icon.codePoints().forEach(codepoint -> {
+                    if (!iconsHex.isEmpty()) iconsHex.append(' ');
+                    iconsHex.append("U+").append(Integer.toHexString(codepoint).toUpperCase());
+                });
 
-            Logger.log("MOB", "%s, %s", name, iconsHex);
+                //Logger.log("MOB", "%s, %s", name, iconsHex);
+            }
+
             return name;
         }
         //Logger.log("REGEX", "%s", custonName);

@@ -13,19 +13,26 @@ import java.util.concurrent.ConcurrentHashMap;
 public class EntityManager {
     private static final Set<UUID> processed = ConcurrentHashMap.newKeySet();
     private static final Set<String> trackedMobNames = ConcurrentHashMap.newKeySet();
+    private static final Set<String> trackedEntityNames = ConcurrentHashMap.newKeySet();
 
 
     //TODO: Change name to a more descriptibe one
     public static void onNameResolved(Entity entity) {
-        if (entity.getCustomName() == null) return;
-        if (!entity.getType().toShortString().equals("armor_stand")) return;
 
         UUID uuid = entity.getUUID();
 
         // TODO: ns si meter solo los que brillan
         if (processed.contains(uuid)) return;
-
+        if (shouldGlow(entity.getType().toShortString())){
+            GlowRegistry.setGlowing(entity, true);
+            processed.add(uuid);
+            return;
+        }
         // Regex
+
+        if (entity.getCustomName() == null) return;
+
+        if (!entity.getType().toShortString().equals("armor_stand")) return;
         String name = EntityUtils.mobNameParse(entity.getCustomName().getString());
 
         if (name != null){
@@ -52,6 +59,14 @@ public class EntityManager {
         trackedMobNames.add(name);
     }
 
+    public static void addEntityTypeGlowing(String name){
+        if (trackedEntityNames.contains(name)) {
+            trackedEntityNames.remove(name);
+        } else {
+            trackedEntityNames.add(name);
+        }
+    }
+
     // TODO: esto esta mal, si algo brilla seguira brillando
     public static void removeMobTypeGlowing(String name){
         trackedMobNames.remove(name);
@@ -66,7 +81,7 @@ public class EntityManager {
     }
 
     private static boolean shouldGlow(String name){
-        return trackedMobNames.contains(name);
+        return (trackedEntityNames.contains(name) || trackedMobNames.contains(name));
     }
 
     private static boolean shouldTrace(String name){
