@@ -1,9 +1,6 @@
 package net.redct.client.module;
 
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderContext;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.redct.client.config.ConfigManager;
 import net.redct.client.config.Setting;
 
 import java.util.ArrayList;

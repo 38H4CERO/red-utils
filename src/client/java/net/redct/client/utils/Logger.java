@@ -3,10 +3,10 @@ package net.redct.client.utils;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class Logger {
 

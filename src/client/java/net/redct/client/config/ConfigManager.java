@@ -2,21 +2,20 @@ package net.redct.client.config;
 
 import com.google.gson.*;
 import net.fabricmc.loader.api.FabricLoader;
-
 import net.redct.client.RedUtilsClient;
 import net.redct.client.gui.config.UITheme;
 import net.redct.client.gui.hud.HudInterface;
 import net.redct.client.gui.hud.HudManager;
-import net.redct.client.module.ModuleManager;
 import net.redct.client.module.Module;
-
-import static net.redct.client.utils.ColorUtils.colorToHex;
-import static net.redct.client.utils.ColorUtils.hexToColor;
+import net.redct.client.module.ModuleManager;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import static net.redct.client.utils.ColorUtils.colorToHex;
+import static net.redct.client.utils.ColorUtils.hexToColor;
 
 public class ConfigManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();

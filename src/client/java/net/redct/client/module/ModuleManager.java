@@ -1,8 +1,12 @@
 package net.redct.client.module;
 
+import net.redct.client.module.impl.AllInAlloeTracker;
+import net.redct.client.module.impl.DungeonClearAlert;
+import net.redct.client.module.impl.EntityDebugModule;
+import net.redct.client.module.impl.ExampleTextRender;
+
 import java.util.ArrayList;
 import java.util.List;
-import net.redct.client.module.impl.*;
 
 public class ModuleManager {
     private static final List<Module> modules = new ArrayList<>();

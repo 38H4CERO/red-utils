@@ -5,11 +5,10 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
-import net.redct.client.gui.widget.AbstractWidget;
 import net.redct.client.gui.config.UITheme;
+import net.redct.client.gui.widget.AbstractWidget;
 
 import java.util.function.Consumer;
-import static net.redct.client.utils.Logger.log;
 
 public class TextInputWidget extends AbstractWidget {
     private String text = "";

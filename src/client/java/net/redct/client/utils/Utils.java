@@ -2,7 +2,6 @@ package net.redct.client.utils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
-import net.minecraft.sounds.SoundEvents;
 
 import java.util.regex.Pattern;
 

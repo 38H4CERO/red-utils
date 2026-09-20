@@ -4,9 +4,8 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
-import net.redct.client.gui.widget.AbstractWidget;
 import net.redct.client.gui.config.UITheme;
-import net.redct.client.gui.config.UILayout;
+import net.redct.client.gui.widget.AbstractWidget;
 
 public class IconButtonWidget extends AbstractWidget {
     private final Identifier texture;

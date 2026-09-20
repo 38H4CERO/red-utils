@@ -21,8 +21,6 @@ import net.redct.client.module.Category;
 import net.redct.client.module.Module;
 import net.redct.client.module.ModuleManager;
 
-import static net.redct.client.utils.Logger.log;
-
 public class ConfigScreen extends Screen {
     private final RootPanel rootPanel;
     private static final Identifier PROFILES_ICON = Identifier.fromNamespaceAndPath("red-utils", "textures/gui/profiles.png");

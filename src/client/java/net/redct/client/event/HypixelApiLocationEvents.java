@@ -3,7 +3,6 @@ package net.redct.client.event;
 import net.hypixel.modapi.HypixelModAPI;
 import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundLocationPacket;
 import net.redct.client.data.Location;
-import net.redct.client.utils.Logger;
 import net.redct.client.utils.PlayerInfo;
 
 public class HypixelApiLocationEvents {

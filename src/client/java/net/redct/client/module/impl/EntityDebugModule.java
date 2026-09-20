@@ -1,6 +1,5 @@
 package net.redct.client.module.impl;
 
-import com.mojang.authlib.properties.Property;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.Entity;
@@ -9,13 +8,11 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ResolvableProfile;
-import net.minecraft.world.level.block.entity.SkullBlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.redct.client.module.Category;
 import net.redct.client.module.Module;
 import net.redct.client.utils.Logger;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;

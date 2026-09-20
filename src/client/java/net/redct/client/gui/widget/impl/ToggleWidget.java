@@ -3,9 +3,9 @@ package net.redct.client.gui.widget.impl;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.redct.client.config.ToggleSetting;
-import net.redct.client.gui.widget.AbstractWidget;
-import net.redct.client.gui.config.UITheme;
 import net.redct.client.gui.config.UILayout;
+import net.redct.client.gui.config.UITheme;
+import net.redct.client.gui.widget.AbstractWidget;
 
 public class ToggleWidget extends AbstractWidget {
     private final ToggleSetting setting;

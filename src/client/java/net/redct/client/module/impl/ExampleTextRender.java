@@ -1,12 +1,10 @@
 package net.redct.client.module.impl;
 
 import net.minecraft.client.Minecraft;
-import net.redct.client.utils.render.GuiTextUtils;
 import net.redct.client.gui.hud.HudManager;
 import net.redct.client.module.Category;
 import net.redct.client.module.Module;
-
-import static net.redct.client.utils.Logger.log;
+import net.redct.client.utils.render.GuiTextUtils;
 
 public class ExampleTextRender extends Module{
     public GuiTextUtils guiText = new GuiTextUtils("coords",4,12, 1.2f);

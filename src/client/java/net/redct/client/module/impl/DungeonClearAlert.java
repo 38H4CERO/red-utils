@@ -3,15 +3,15 @@ package net.redct.client.module.impl;
 import net.redct.client.config.ColorSetting;
 import net.redct.client.config.SliderSetting;
 import net.redct.client.config.ToggleSetting;
-import net.redct.client.utils.render.GuiTextUtils;
 import net.redct.client.gui.hud.HudManager;
 import net.redct.client.module.Category;
 import net.redct.client.module.Module;
-import net.redct.client.utils.dungeon.DungeonSession;
 import net.redct.client.utils.Utils;
+import net.redct.client.utils.dungeon.DungeonSession;
+import net.redct.client.utils.render.GuiTextUtils;
 
-import static net.redct.client.utils.render.GuiTextUtils.sendTitle;
 import static net.redct.client.utils.dungeon.DungeonUtils.*;
+import static net.redct.client.utils.render.GuiTextUtils.sendTitle;
 
 
 public class DungeonClearAlert extends Module {

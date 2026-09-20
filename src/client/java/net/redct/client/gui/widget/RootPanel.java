@@ -5,10 +5,9 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.redct.client.utils.GuiUtils;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import static net.redct.client.utils.Logger.log;
 
 public class RootPanel {
     private static RootPanel instance;

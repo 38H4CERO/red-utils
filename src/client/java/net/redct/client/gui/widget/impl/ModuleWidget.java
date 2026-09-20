@@ -6,10 +6,10 @@ import net.redct.client.config.ColorSetting;
 import net.redct.client.config.Setting;
 import net.redct.client.config.SliderSetting;
 import net.redct.client.config.ToggleSetting;
+import net.redct.client.gui.config.UILayout;
+import net.redct.client.gui.config.UITheme;
 import net.redct.client.gui.widget.Panel;
 import net.redct.client.gui.widget.Widget;
-import net.redct.client.gui.config.UITheme;
-import net.redct.client.gui.config.UILayout;
 import net.redct.client.module.Module;
 import net.redct.client.utils.GuiUtils;
 

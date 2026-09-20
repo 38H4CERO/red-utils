@@ -4,11 +4,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.redct.client.config.ColorSetting;
+import net.redct.client.gui.config.UILayout;
+import net.redct.client.gui.config.UITheme;
 import net.redct.client.gui.hud.impl.ColorPickerPopup;
 import net.redct.client.gui.widget.AbstractWidget;
 import net.redct.client.gui.widget.RootPanel;
-import net.redct.client.gui.config.UITheme;
-import net.redct.client.gui.config.UILayout;
 import net.redct.client.utils.Utils;
 
 import static net.redct.client.utils.GuiUtils.centerWindow;

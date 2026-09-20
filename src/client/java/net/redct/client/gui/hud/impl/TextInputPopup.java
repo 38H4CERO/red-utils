@@ -1,6 +1,5 @@
 package net.redct.client.gui.hud.impl;
 
-import net.redct.client.gui.widget.AbsPanel;
 import net.redct.client.gui.widget.RootPanel;
 import net.redct.client.gui.widget.VPanel;
 import net.redct.client.gui.widget.impl.ButtonWidget;

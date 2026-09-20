@@ -1,20 +1,17 @@
 package net.redct.client.utils.entity;
 
-import com.mojang.authlib.properties.Property;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ResolvableProfile;
-import net.redct.client.utils.Logger;
-import net.redct.client.utils.dungeon.DungeonSession;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static net.redct.client.module.impl.AllInAlloeTracker.checkJellyBeans;
 import static net.redct.client.utils.entity.EntityManager.onNameResolved;
 
 public class EntityUtils {
@@ -62,6 +59,7 @@ public class EntityUtils {
         var level = net.minecraft.client.Minecraft.getInstance().level;
         if (level == null) return;
         for (Entity entity : level.entitiesForRendering()) {
+            checkJellyBeans(entity);
             if (entity.getType().toShortString().equals("armor_stand") && entity.hasCustomName()) {
                 onNameResolved(entity);
             }

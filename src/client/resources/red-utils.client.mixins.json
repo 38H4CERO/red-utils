@@ -3,13 +3,13 @@
   "package": "net.redct.client.mixin",
   "compatibilityLevel": "JAVA_25",
   "client": [
+    "ArmorStandRendererMixin",
+    "ArmorStandRenderStateMixin",
     "EntityGlowingMixin",
     "GameRendererMixin",
+    "LivingEntityEquipmentMixin",
     "MapDataMixin",
     "ScoreBoardMixin",
-    "ArmorStandRenderStateMixin",
-    "ArmorStandRendererMixin",
-    "LivingEntityEquipmentMixin",
     "SyncedDataUpdatedMixin",
     "accessor.EntityAccessor"
   ],
