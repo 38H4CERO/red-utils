@@ -1,8 +1,15 @@
 package net.redct.client.utils.entity;
 
+import com.mojang.authlib.properties.Property;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ResolvableProfile;
 import net.redct.client.utils.Logger;
 import net.redct.client.utils.dungeon.DungeonSession;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.regex.Matcher;
@@ -59,6 +66,23 @@ public class EntityUtils {
                 onNameResolved(entity);
             }
         }
+    }
+
+    @Nullable
+    public static String getArmorStandPlayerHeadSkin(Entity entity) {
+        if (entity instanceof ArmorStand armorStand) {
+            return getPlayerSkin(armorStand.getItemBySlot(EquipmentSlot.HEAD));
+        }
+        return null;
+    }
+
+    @Nullable
+    public static String getPlayerSkin(ItemStack item){
+            ResolvableProfile profile = item.get(DataComponents.PROFILE);
+            if (profile != null) {
+                return profile.partialProfile().properties().get("textures").iterator().next().value();
+            }
+            return null;
     }
 
 

@@ -1,19 +1,22 @@
 {
-	"required": true,
-	"package": "net.redct.client.mixin",
-	"compatibilityLevel": "JAVA_25",
-	"client": [
-		"MapDataMixin",
-		"ScoreBoardMixin",
-		"GameRendererMixin",
-		"EntityGlowingMixin",
-		"SyncedDataUpdatedMixin",
-      "accessor.EntityAccessor"
-	],
-	"injectors": {
-		"defaultRequire": 1
-	},
-	"overwrites": {
-		"requireAnnotations": true
-	}
+  "required": true,
+  "package": "net.redct.client.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "client": [
+    "EntityGlowingMixin",
+    "GameRendererMixin",
+    "MapDataMixin",
+    "ScoreBoardMixin",
+    "ArmorStandRenderStateMixin",
+    "ArmorStandRendererMixin",
+    "LivingEntityEquipmentMixin",
+    "SyncedDataUpdatedMixin",
+    "accessor.EntityAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
 }

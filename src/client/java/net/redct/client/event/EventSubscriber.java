@@ -4,13 +4,22 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
+import net.redct.client.data.Location;
+import net.redct.client.data.PlayerHeadSkin;
 import net.redct.client.module.Module;
 import net.redct.client.module.ModuleManager;
+import net.redct.client.module.impl.AllInAlloeTracker;
+import net.redct.client.utils.Logger;
+import net.redct.client.utils.PlayerInfo;
 import net.redct.client.utils.entity.EntityManager;
 import net.redct.client.utils.entity.GlowRegistry;
+import net.redct.client.utils.entity.HiddenArmorStands;
 import net.redct.client.utils.render.Tracer;
 import net.redct.client.utils.dungeon.DungeonSession;
 import net.redct.client.utils.Utils;
+
+import static net.redct.client.module.ModuleManager.isModuleEnabled;
+import static net.redct.client.utils.entity.EntityUtils.getArmorStandPlayerHeadSkin;
 
 public class EventSubscriber {
 
@@ -33,7 +42,7 @@ public class EventSubscriber {
             Tracer.clearLines();
             GlowRegistry.clearGlowRegistry();
             EntityManager.clearProcessedMobs();
-
+            HiddenArmorStands.INSTANCE.clear();
         });
     }
 
@@ -44,6 +53,7 @@ public class EventSubscriber {
             Tracer.clearLines();
             GlowRegistry.clearGlowRegistry();
             EntityManager.clearProcessedMobs();
+            HiddenArmorStands.INSTANCE.clear();
         });
     }
 
@@ -87,6 +97,16 @@ public class EventSubscriber {
                         // TODO: No estoy del todo seguro si esto es mejor o peor
                         EntityManager.onNameResolved(entity);
                     }
+
+                    if (PlayerInfo.INSTANCE.getCurrentLocation() == Location.GARDEN){
+                        if (isModuleEnabled("all_in_alloe_tracker")){
+                            if (HiddenArmorStands.INSTANCE.isProcessed(entity.getUUID())) return;
+                            if(PlayerHeadSkin.MAGIC_JELLYBEAM.getId().equals(getArmorStandPlayerHeadSkin(entity))){
+                                HiddenArmorStands.INSTANCE.setProcessed(entity.getUUID());
+                                HiddenArmorStands.INSTANCE.hide(entity.getUUID());
+                            }
+                        }
+                    }
                     break;
                 default:
                     EntityManager.onNameResolved(entity);
@@ -108,6 +128,8 @@ public class EventSubscriber {
                     }
                     break;
                 case "armor_stand":
+                    HiddenArmorStands.INSTANCE.show(entity.getUUID());
+                    HiddenArmorStands.INSTANCE.removeProccesed(entity.getUUID());
                     break;
                 default:
                     break;

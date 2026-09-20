@@ -16,7 +16,7 @@ import static net.redct.client.utils.dungeon.DungeonUtils.*;
 
 public class DungeonClearAlert extends Module {
     public final ToggleSetting makeSound = new ToggleSetting("makeSound", "Sound", true);
-    public final SliderSetting volume = new SliderSetting("volume", "Volume", 100, 0, 100)
+    public final SliderSetting volume = new SliderSetting("volume", "Volume", 100, 0, 100, 0.5)
             .visibleWhen(makeSound::getValue);
     public final ColorSetting color = new ColorSetting("color", "Color", 0xFFFFFFFF);
     public GuiTextUtils guiText = new GuiTextUtils("dungeonAlert",4,12, 1.2f);

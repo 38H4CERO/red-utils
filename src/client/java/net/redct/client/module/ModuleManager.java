@@ -12,6 +12,7 @@ public class ModuleManager {
         // TODO: for module in list = register
         register(new ExampleTextRender());
         register(new DungeonClearAlert());
+        register(new AllInAlloeTracker());
 
         if (debugMode){
             register(new EntityDebugModule());

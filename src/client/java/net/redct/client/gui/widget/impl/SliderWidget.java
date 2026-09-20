@@ -10,16 +10,18 @@ import net.redct.client.gui.config.UILayout;
 public class SliderWidget extends AbstractWidget {
     private final SliderSetting setting;
     private String cachedValueString; // Prevents string allocation in render loop
+    private String formating;
 
     public SliderWidget(SliderSetting setting) {
         super(UILayout.FRAME_WIDTH - UILayout.SETTING_X_OFFSET, UILayout.SETTING_HEIGHT);
         this.setting = setting;
+        // Check if step is a whole number or not for formatting
+        this.formating = (setting.getStep() % 1 == 0 ) ? "%.0f" : "%.1f";
         updateCache();
     }
 
     private void updateCache() {
-        // Format to 1 decimal place (or drop the decimal if you prefer integers)
-        this.cachedValueString = String.format("%.1f", setting.getValue());
+        cachedValueString = String.format(formating, setting.getValue());
     }
 
     @Override

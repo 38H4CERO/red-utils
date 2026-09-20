@@ -12,7 +12,7 @@ public class ExampleTextRender extends Module{
     public GuiTextUtils guiText = new GuiTextUtils("coords",4,12, 1.2f);
 
     public ExampleTextRender(){
-        super("example_text","Example Text Render", Category.MISC);
+        super("example_text","Example Text Render", Category.RENDER);
         HudManager.register(guiText, this); // register so HudEditorScreen can see and move it
     }
 
