@@ -4,6 +4,7 @@ import net.fabricmc.api.ClientModInitializer;
 
 import net.redct.client.commands.ModCommands;
 import net.redct.client.config.ConfigManager;
+import net.redct.client.event.EventSubscriber;
 import net.redct.client.gui.hud.HudManager;
 import net.redct.client.module.ModuleManager;
 import org.slf4j.Logger;
