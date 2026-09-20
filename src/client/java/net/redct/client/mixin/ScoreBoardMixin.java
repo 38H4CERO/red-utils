@@ -2,7 +2,9 @@ package net.redct.client.mixin;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.redct.client.data.Location;
 import net.redct.client.module.ModuleManager;
+import net.redct.client.utils.PlayerInfo;
 import net.redct.client.utils.dungeon.DungeonUtils;
 import net.redct.client.utils.ScoreboardUtils;
 import net.redct.client.utils.Utils;
@@ -24,7 +26,7 @@ public class ScoreBoardMixin {
         * */
         ScoreboardUtils.getScoreboard();
 
-        if(ModuleManager.isModuleEnabled("dungeonClearAlert")){
+        if(ModuleManager.isModuleEnabled("dungeonClearAlert") && PlayerInfo.INSTANCE.getCurrentLocation() == Location.THE_CATACOMBS){
             DungeonUtils.checkDungeon();
         }
     }

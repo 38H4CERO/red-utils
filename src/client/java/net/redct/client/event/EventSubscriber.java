@@ -15,6 +15,9 @@ import net.redct.client.utils.Utils;
 public class EventSubscriber {
 
     public static void registerToEvents(){
+        HypixelApiLocationEvents.register();
+
+        // Fabric Events
         onServerConnectEVENT();
         onServerDisconnectEVENT();
         onTickEVENT();
