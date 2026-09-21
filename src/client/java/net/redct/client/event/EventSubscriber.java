@@ -13,7 +13,7 @@ import net.redct.client.utils.entity.GlowRegistry;
 import net.redct.client.utils.entity.HiddenArmorStands;
 import net.redct.client.utils.render.Tracer;
 
-import static net.redct.client.module.impl.AllInAlloeTracker.checkJellyBeans;
+import static net.redct.client.module.impl.AllInAlloeTracker.*;
 
 public class EventSubscriber {
 
@@ -37,6 +37,7 @@ public class EventSubscriber {
             GlowRegistry.clearGlowRegistry();
             EntityManager.clearProcessedMobs();
             HiddenArmorStands.INSTANCE.clear();
+            clearMutations();
         });
     }
 
@@ -48,6 +49,7 @@ public class EventSubscriber {
             GlowRegistry.clearGlowRegistry();
             EntityManager.clearProcessedMobs();
             HiddenArmorStands.INSTANCE.clear();
+            clearMutations();
         });
     }
 
@@ -88,11 +90,11 @@ public class EventSubscriber {
                     break;
                 case "armor_stand":
                     if (entity.hasCustomName()){
-                        // TODO: No estoy del todo seguro si esto es mejor o peor
+                        // TODO: No estoy del todo seguro si esto es mejor o peor. Igual no hace falta esto, con el mixin sirve
                         EntityManager.onNameResolved(entity);
                     }
 
-                    checkJellyBeans(entity);
+                    //checkJellyBeans(entity);
                     break;
                 default:
                     EntityManager.onNameResolved(entity);
@@ -116,6 +118,7 @@ public class EventSubscriber {
                 case "armor_stand":
                     HiddenArmorStands.INSTANCE.show(entity.getUUID());
                     HiddenArmorStands.INSTANCE.removeProccesed(entity.getUUID());
+                    removeMutation(entity.getUUID());
                     break;
                 default:
                     break;

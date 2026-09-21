@@ -10,6 +10,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static net.redct.client.module.impl.AllInAlloeTracker.manageAlloe;
+
 public class EntityManager {
     private static final Set<UUID> processed = ConcurrentHashMap.newKeySet();
     private static final Set<String> trackedMobNames = ConcurrentHashMap.newKeySet();
@@ -35,6 +37,7 @@ public class EntityManager {
         if (!entity.getType().toShortString().equals("armor_stand")) return;
         String name = EntityUtils.mobNameParse(entity.getCustomName().getString());
 
+        // Normal mob regex
         if (name != null){
             if (shouldGlow(name)){
                 GlowRegistry.setGlowing(entity.getId()-1, true);
@@ -44,6 +47,7 @@ public class EntityManager {
             }
             processed.add(uuid);
         } else {
+            manageAlloe(entity);
             //System.out.println("[LOG] no mob entity = "+ customName.getString());
         }
 
