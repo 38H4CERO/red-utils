@@ -3,6 +3,7 @@ package net.redct.client.mixin;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.Entity;
 import net.redct.client.mixin.accessor.EntityAccessor;
+import net.redct.client.utils.Logger;
 import net.redct.client.utils.Utils;
 import net.redct.client.utils.entity.EntityManager;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,7 +25,10 @@ public abstract class SyncedDataUpdatedMixin {
 
         if (accessor.equals(EntityAccessor.getCustomNameAccessor())) {
             Entity self = (Entity) (Object) this;
+            Logger.log("CNAME", "%s", self.getName());
             EntityManager.onNameResolved(self);
+            // Esto no se llama nunca?
+            manageAlloe(self);
         }
     }
 

@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.redct.client.module.Module;
 import net.redct.client.module.ModuleManager;
+import net.redct.client.utils.Logger;
 import net.redct.client.utils.Utils;
 import net.redct.client.utils.dungeon.DungeonSession;
 import net.redct.client.utils.entity.EntityManager;
@@ -14,6 +15,7 @@ import net.redct.client.utils.entity.HiddenArmorStands;
 import net.redct.client.utils.render.Tracer;
 
 import static net.redct.client.module.impl.AllInAlloeTracker.*;
+import static net.redct.client.module.impl.AllInAlloeTracker.removeMutation;
 
 public class EventSubscriber {
 
@@ -92,6 +94,7 @@ public class EventSubscriber {
                     if (entity.hasCustomName()){
                         // TODO: No estoy del todo seguro si esto es mejor o peor. Igual no hace falta esto, con el mixin sirve
                         EntityManager.onNameResolved(entity);
+                        Logger.log("Info", "%s", entity.getCustomName());
                     }
 
                     //checkJellyBeans(entity);
@@ -119,6 +122,7 @@ public class EventSubscriber {
                     HiddenArmorStands.INSTANCE.show(entity.getUUID());
                     HiddenArmorStands.INSTANCE.removeProccesed(entity.getUUID());
                     removeMutation(entity.getUUID());
+                    sortListByStage();
                     break;
                 default:
                     break;

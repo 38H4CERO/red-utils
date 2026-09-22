@@ -2,6 +2,7 @@ package net.redct.client.utils.entity;
 
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.Entity;
+import net.redct.client.utils.Logger;
 import net.redct.client.utils.render.Tracer;
 import net.redct.client.utils.render.Tracer.Anchor;
 

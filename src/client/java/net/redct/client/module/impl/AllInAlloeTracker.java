@@ -23,14 +23,13 @@ import static net.redct.client.utils.entity.EntityUtils.getArmorStandPlayerHeadS
 import static net.redct.client.utils.entity.EntityUtils.rescanLoadedArmorStands;
 
 public class AllInAlloeTracker extends Module {
-    public GuiTextUtils guiText = new GuiTextUtils("alloe_tracker", 4, 12, 1.2f);
+    public static GuiTextUtils guiText = new GuiTextUtils("alloe_tracker", 4, 12, 1.2f);
     public final SliderSetting trigger = new SliderSetting("trigger", "Stage", 14, 0, 27, 1);
     public final ColorSetting color = new ColorSetting("color", "Color", 0xFFFFFFFF);
 
     public AllInAlloeTracker() {
         super("all_in_alloe_tracker", "Alloe Track", Category.GARDEN);
         HudManager.register(guiText, this); // register so HudEditorScreen can see and move it
-        guiText.setText("Alloe");
         guiText.setVisible(false);
         registerSetting(trigger);
         registerSetting(color);
@@ -41,7 +40,7 @@ public class AllInAlloeTracker extends Module {
     public void onEnable() {
         HiddenArmorStands.INSTANCE.clear();
         rescanLoadedArmorStands();
-        //guiText.setVisible(true);
+        guiText.setVisible(true);
 
     }
 
@@ -77,10 +76,11 @@ public class AllInAlloeTracker extends Module {
         mutations.clear();
     }
 
-    public static List<MutationStand> getSortedByStage() {
+    public static void sortListByStage() {
         List<MutationStand> list = new ArrayList<>(mutations.values());
         list.sort(Comparator.comparingInt(MutationStand::stage));
-        return list;
+        orderedStages = list;
+        guiText.setText(list.size() + " alloe");
     }
 
     public static void checkJellyBeans(Entity entity) {
@@ -96,18 +96,20 @@ public class AllInAlloeTracker extends Module {
     }
 
     public static void manageAlloe(Entity entity) {
+        Logger.log("Fase1", "%s, %s, %s", ModuleManager.isModuleEnabled("all_in_alloe_tracker"), PlayerInfo.INSTANCE.getCurrentLocation(), entity.getCustomName().getString());
         if (!ModuleManager.isModuleEnabled("all_in_alloe_tracker")) return;
         if (!PlayerInfo.INSTANCE.getCurrentLocation().equals(Location.GARDEN)) return;
 
         String name = entity.getCustomName().getString();
         int stage = checkAlloeStage(name);
         if (stage == -1) return;
+        Logger.log("Fase2", "%s", stage);
         addMutation(entity, stage);
-        orderedStages = getSortedByStage();
+        sortListByStage();
     }
 
     private static int checkAlloeStage(String name) {
-        if (!name.startsWith("STAGE ")) return -1;
+        if (!name.startsWith("Stage ")) return -1;
         try {
             return Integer.parseInt(name, 6, name.length(), 10);
         } catch (Exception e) {
