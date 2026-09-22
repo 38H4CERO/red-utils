@@ -25,10 +25,7 @@ public abstract class SyncedDataUpdatedMixin {
 
         if (accessor.equals(EntityAccessor.getCustomNameAccessor())) {
             Entity self = (Entity) (Object) this;
-            Logger.log("CNAME", "%s", self.getName());
             EntityManager.onNameResolved(self);
-            // Esto no se llama nunca?
-            manageAlloe(self);
         }
     }
 

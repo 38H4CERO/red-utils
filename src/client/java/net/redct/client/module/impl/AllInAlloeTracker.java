@@ -1,6 +1,7 @@
 package net.redct.client.module.impl;
 
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 import net.redct.client.config.ColorSetting;
 import net.redct.client.config.SliderSetting;
 import net.redct.client.data.Location;
@@ -14,6 +15,7 @@ import net.redct.client.utils.PlayerInfo;
 import net.redct.client.utils.Utils;
 import net.redct.client.utils.entity.HiddenArmorStands;
 import net.redct.client.utils.render.GuiTextUtils;
+import net.redct.client.utils.render.Tracer;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -24,13 +26,14 @@ import static net.redct.client.utils.entity.EntityUtils.rescanLoadedArmorStands;
 
 public class AllInAlloeTracker extends Module {
     public static GuiTextUtils guiText = new GuiTextUtils("alloe_tracker", 4, 12, 1.2f);
-    public final SliderSetting trigger = new SliderSetting("trigger", "Stage", 14, 0, 27, 1);
-    public final ColorSetting color = new ColorSetting("color", "Color", 0xFFFFFFFF);
+    public static final SliderSetting trigger = new SliderSetting("trigger", "Stage", 14, 0, 27, 1);
+    public static final ColorSetting color = new ColorSetting("color", "Color", 0xFFFFFFFF);
 
     public AllInAlloeTracker() {
         super("all_in_alloe_tracker", "Alloe Track", Category.GARDEN);
         HudManager.register(guiText, this); // register so HudEditorScreen can see and move it
-        guiText.setVisible(false);
+        guiText.setVisible(true);
+        guiText.setColor(0xdd7878, 255);
         registerSetting(trigger);
         registerSetting(color);
 
@@ -53,7 +56,9 @@ public class AllInAlloeTracker extends Module {
 
     private static final Map<UUID, MutationStand> mutations = new ConcurrentHashMap<>();
     private static List<MutationStand> orderedStages;
-    public record MutationStand(Utils.Vec2 pos, int stage) {
+    private static final Set<String> lines = ConcurrentHashMap.newKeySet();
+    private static final double alloe_y = 75.5;
+    public record MutationStand(Utils.Vec2 pos, int stage, UUID uuid) {
 
     }
 
@@ -61,7 +66,7 @@ public class AllInAlloeTracker extends Module {
 
     public static void addMutation(Entity entity, int stage) {
         Utils.Vec2 pos = new Utils.Vec2((int)Math.floor(entity.getX()), (int)Math.floor(entity.getZ()));
-        mutations.put(entity.getUUID(), new MutationStand(pos ,stage));
+        mutations.put(entity.getUUID(), new MutationStand(pos ,stage,entity.getUUID()));
     }
 
     public static void removeMutation(UUID uuid) {
@@ -78,9 +83,42 @@ public class AllInAlloeTracker extends Module {
 
     public static void sortListByStage() {
         List<MutationStand> list = new ArrayList<>(mutations.values());
-        list.sort(Comparator.comparingInt(MutationStand::stage));
+        list.sort(Comparator.comparingInt(MutationStand::stage).reversed());
         orderedStages = list;
-        guiText.setText(list.size() + " alloe");
+        guiText.setText(buildString());
+        traceAllAlloes();
+    }
+
+    private static String buildString() {
+        if (orderedStages.isEmpty()) {
+            clearAllLines();
+            return "";
+        }
+        StringBuilder text = new StringBuilder("All-in-Alloe:");
+        int stage = orderedStages.getFirst().stage();
+        int sum = 0;
+
+        for (MutationStand mutation : orderedStages) {
+            if (mutation.stage() == stage) {
+                sum++;
+            } else {
+                text.append(String.format("\n - %-2d x%d", stage, sum));
+                stage = mutation.stage();
+                sum = 1;
+            }
+        }
+        text.append(String.format("\n - %-2d x%d", stage, sum));
+        return text.toString();
+    }
+
+    private static void traceAllAlloes(){
+        for (MutationStand mutation : orderedStages) {
+            if (mutation.stage() >= trigger.getValue()) {
+                Tracer.setLine(mutation.uuid.toString(), Tracer.Anchor.player(), Tracer.Anchor.fixed(new Vec3(mutation.pos.x()+0.5, alloe_y, mutation.pos.y()+0.5)), 2, color.getColor());
+            } else {
+                Tracer.removeLine(mutation.uuid.toString());
+            }
+        }
     }
 
     public static void checkJellyBeans(Entity entity) {
@@ -96,14 +134,12 @@ public class AllInAlloeTracker extends Module {
     }
 
     public static void manageAlloe(Entity entity) {
-        Logger.log("Fase1", "%s, %s, %s", ModuleManager.isModuleEnabled("all_in_alloe_tracker"), PlayerInfo.INSTANCE.getCurrentLocation(), entity.getCustomName().getString());
         if (!ModuleManager.isModuleEnabled("all_in_alloe_tracker")) return;
         if (!PlayerInfo.INSTANCE.getCurrentLocation().equals(Location.GARDEN)) return;
-
+        //if (!entity.hasCustomName()) return;
         String name = entity.getCustomName().getString();
         int stage = checkAlloeStage(name);
         if (stage == -1) return;
-        Logger.log("Fase2", "%s", stage);
         addMutation(entity, stage);
         sortListByStage();
     }
@@ -117,5 +153,11 @@ public class AllInAlloeTracker extends Module {
             return -1;
         }
 
+    }
+
+    private static void clearAllLines(){
+        for  (String id : lines) {
+            Tracer.removeLine(id);
+        }
     }
 }

@@ -34,7 +34,7 @@ public class EventSubscriber {
     // TODO: This runs each time you change island
     private static void onServerConnectEVENT() {
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
-            Utils.isOnHypixel();
+            //Utils.isOnHypixel();
             Tracer.clearLines();
             GlowRegistry.clearGlowRegistry();
             EntityManager.clearProcessedMobs();
@@ -123,6 +123,7 @@ public class EventSubscriber {
                     HiddenArmorStands.INSTANCE.removeProccesed(entity.getUUID());
                     removeMutation(entity.getUUID());
                     sortListByStage();
+                    Tracer.removeLine(entity.getStringUUID());
                     break;
                 default:
                     break;

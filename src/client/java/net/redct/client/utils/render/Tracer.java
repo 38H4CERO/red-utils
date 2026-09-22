@@ -44,7 +44,7 @@ public class Tracer {
 
         /** A point that never moves. */
         static Anchor fixed(Vec3 point) {
-            return (partialTick) -> point.add(0.5, 0, 0.5);
+            return (partialTick) -> point.add(0, 0, 0);
         }
 
         /**

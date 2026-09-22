@@ -7,17 +7,20 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.redct.client.gui.hud.HudInterface;
 
+import java.util.List;
+
 import static net.redct.client.utils.ColorUtils.makeARGB;
 
 
 public class GuiTextUtils implements HudInterface {
-    private String id;
+    private final String id;
     private boolean isVisible = true;
     private float scale = 1.0f;
     private int x = 0;
     private int y = 0;
     private int color = 0xFFFFFFFF;
     private String text;
+    private int lineHeight = 9; // minecraft font line height
 
     public GuiTextUtils(String id, int x, int y, float scale) {
         this.id = id;
@@ -33,20 +36,36 @@ public class GuiTextUtils implements HudInterface {
         this(id,0, 0, 1);
     }
 
-
     public void setText(String text) {
         this.text = text;
     }
     public String getText() {
         return text;
     }
+
+    public void setLines(List<String> lines) {
+        this.text = String.join("\n", lines);
+    }
+
+    public List<String> getLines() {
+        return text == null ? List.of() : List.of(text.split("\n", -1));
+    }
+
+    public int getLineCount() {
+        return getLines().size();
+    }
+
+    public void setLineHeight(int lineHeight) {
+        this.lineHeight = lineHeight;
+    }
+
+    public int getLineHeight() {
+        return lineHeight;
+    }
+
     public void setPosition(int x, int y) {
         this.x = x;
         this.y = y;
-    }
-
-    public void setColor(int color) {
-        this.color = color;
     }
 
     @Override public String getId() { return id; }
@@ -59,13 +78,19 @@ public class GuiTextUtils implements HudInterface {
     @Override
     public int getWidth() {
         Font font = Minecraft.getInstance().font;
-        if (font == null) return 0;
-        return (int)(font.width(getText()) * scale);
+        if (text == null ||text.isEmpty()) return 0;
+        int maxWidth = 0;
+        for (String line : text.split("\n", -1)) {
+            maxWidth = Math.max(maxWidth, font.width(line));
+        }
+        return (int)(maxWidth * scale);
     }
 
     @Override
     public int getHeight() {
-        return (int)(9 * scale); // minecraft font height is always 9
+        if (text == null || text.isEmpty()) return 0;
+        int lineCount = text.split("\n", -1).length;
+        return (int)(lineHeight * lineCount * scale);
     }
 
     @Override
@@ -74,6 +99,7 @@ public class GuiTextUtils implements HudInterface {
 
         // TODO: crear un GUIManager y inicializar font alli
         Font font = Minecraft.getInstance().font;
+        String[] lines = text.split("\n", -1);
 
         if (scale != 1.0f){
             var pose = graphics.pose();
@@ -81,12 +107,16 @@ public class GuiTextUtils implements HudInterface {
             try {
                 pose.translate(x, y);
                 pose.scale(scale, scale);
-                graphics.text(font, text, 0, 0, color);
+                for (int i = 0; i < lines.length; i++) {
+                    graphics.text(font, lines[i], 0, i * lineHeight, color);
+                }
             } finally {
                 pose.popMatrix();
             }
         } else {
-            graphics.text(font, text, x, y, color);
+            for (int i = 0; i < lines.length; i++) {
+                graphics.text(font, lines[i], x, y + i * lineHeight, color);
+            }
         }
     }
 
@@ -107,6 +137,11 @@ public class GuiTextUtils implements HudInterface {
      */
     public void setColor(int RGB, int alpha) {
         this.color = makeARGB(RGB, alpha);
+    }
+
+
+    public void setColor(int color) {
+        this.color = color;
     }
 
     public static void sendTitle(String title, String subtitle) {

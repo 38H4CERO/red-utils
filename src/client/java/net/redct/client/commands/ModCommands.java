@@ -90,7 +90,7 @@ public class ModCommands {
                 float x = FloatArgumentType.getFloat(context, "x");
                 float y = FloatArgumentType.getFloat(context, "y");
                 float z = FloatArgumentType.getFloat(context, "z");
-                Tracer.setLine("command", Anchor.player(), Anchor.fixed(new Vec3(x, y, z)), 3f, ARGB.white(255));
+                Tracer.setLine("command", Anchor.player(), Anchor.fixed(new Vec3(x+0.5, y, z+0.5)), 3f, ARGB.white(255));
                 return 1;
             })))).then(ClientCommands.literal("clear").executes(context -> {
                 Tracer.clearLines();
