@@ -37,6 +37,9 @@ public class AllInAlloeTracker extends Module {
         registerSetting(trigger);
         registerSetting(color);
 
+        trigger.onChange(AllInAlloeTracker::traceAllAlloes);
+        color.onChange(AllInAlloeTracker::traceAllAlloes);
+
     }
 
     @Override
@@ -112,6 +115,7 @@ public class AllInAlloeTracker extends Module {
     }
 
     private static void traceAllAlloes(){
+        if (orderedStages == null) return;
         for (MutationStand mutation : orderedStages) {
             if (mutation.stage() >= trigger.getValue()) {
                 Tracer.setLine(mutation.uuid.toString(), Tracer.Anchor.player(), Tracer.Anchor.fixed(new Vec3(mutation.pos.x()+0.5, alloe_y, mutation.pos.y()+0.5)), 2, color.getColor());

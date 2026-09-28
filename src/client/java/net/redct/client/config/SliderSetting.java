@@ -23,7 +23,12 @@ public class SliderSetting extends Setting {
     public void setValue(double value) {
         double temp = Math.clamp(value, min, max);
         temp = Math.floor(temp / step) * step;
-        this.value = Math.clamp(temp, min, max);
+
+        if (temp != this.value) {
+            this.value = Math.clamp(temp, min, max);
+            notifyChange();
+        }
+
     }
 
 }

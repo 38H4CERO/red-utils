@@ -40,6 +40,7 @@ public class EventSubscriber {
             EntityManager.clearProcessedMobs();
             HiddenArmorStands.INSTANCE.clear();
             clearMutations();
+
         });
     }
 
@@ -93,8 +94,9 @@ public class EventSubscriber {
                 case "armor_stand":
                     if (entity.hasCustomName()){
                         // TODO: No estoy del todo seguro si esto es mejor o peor. Igual no hace falta esto, con el mixin sirve
+                        // No se puede trackear armor_stands a secas con esto
                         EntityManager.onNameResolved(entity);
-                        Logger.log("Info", "%s", entity.getCustomName());
+                        //Logger.log("Info", "%s", entity.getCustomName());
                     }
 
                     //checkJellyBeans(entity);
@@ -112,6 +114,9 @@ public class EventSubscriber {
             //if (entity.getType().toShortString().contains("armor_stand")) return;
             // TODO: Some players are loaded before they get the tag
             // Some mobs are players
+            if (entity.getRemovalReason() != null){
+                Logger.log("DEBUG", "ENTITY_UNLOAD fired: type=%s pos=%.1f,%.1f,%.1f reason=%s", entity.getType().toShortString(), entity.getX(), entity.getY(), entity.getZ(), entity.getRemovalReason().toString());
+            }
             switch (entity.getType().toShortString()){
                 case "player":
                     if (entity.getTeam()!= null ? entity.getTeam().getNameTagVisibility().toString().equals("ALWAYS") : false){
