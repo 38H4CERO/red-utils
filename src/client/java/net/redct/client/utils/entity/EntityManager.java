@@ -41,6 +41,7 @@ public class EntityManager {
         // Normal mob regex
         if (name != null){
             if (shouldGlow(name)){
+                // Trick to get entity from armor_stand
                 GlowRegistry.setGlowing(entity.getId()-1, true);
             }
             if (shouldTrace(name)){

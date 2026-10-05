@@ -115,7 +115,7 @@ public class EventSubscriber {
             // TODO: Some players are loaded before they get the tag
             // Some mobs are players
             if (entity.getRemovalReason() != null){
-                Logger.log("DEBUG", "ENTITY_UNLOAD fired: type=%s pos=%.1f,%.1f,%.1f reason=%s", entity.getType().toShortString(), entity.getX(), entity.getY(), entity.getZ(), entity.getRemovalReason().toString());
+                //Logger.log("DEBUG", "ENTITY_UNLOAD fired: type=%s pos=%.1f,%.1f,%.1f reason=%s", entity.getType().toShortString(), entity.getX(), entity.getY(), entity.getZ(), entity.getRemovalReason().toString());
             }
             switch (entity.getType().toShortString()){
                 case "player":

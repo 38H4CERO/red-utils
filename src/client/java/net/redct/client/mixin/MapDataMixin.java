@@ -32,8 +32,8 @@ public class MapDataMixin {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) return;
 
-        if(!isModuleEnabled("dungeonClearAlert")) return;
         if(!Utils.inHypixel) return;
+        if(!isModuleEnabled("dungeonClearAlert")) return;
         if(DungeonSession.get() == null) return;
 
         if (packet.mapId().id() != mapId) return;

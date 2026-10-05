@@ -14,20 +14,23 @@ public class EntityGlowingMixin {
     @Inject(method = "shouldEntityAppearGlowing", at = @At("HEAD"), cancellable = true)
     private void shouldEntityGlow(Entity entity, CallbackInfoReturnable<Boolean> cir) {
         switch (entity.getType().toShortString()){
+            /*
             case "armor_stand":
                 break;
+
+             */
             case "player":
-                if (entity.getTeam()!= null ? entity.getTeam().getNameTagVisibility().toString().equals("ALWAYS") : false){
+                if (entity.getTeam() != null && entity.getTeam().getNameTagVisibility().toString().equals("ALWAYS")){
                     //cir.setReturnValue(true);
                 } else {
                     // Puede se goblins... etc y npc
-                    glow = GlowRegistry.shouldGlow(entity);
-                    cir.setReturnValue(glow);
+                    if (GlowRegistry.shouldGlow(entity))
+                        cir.setReturnValue(true);
                 }
                 break;
             default:
-                glow = GlowRegistry.shouldGlow(entity);
-                cir.setReturnValue(glow);
+                if (GlowRegistry.shouldGlow(entity))
+                    cir.setReturnValue(true);
         }
     }
 }

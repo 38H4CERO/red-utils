@@ -77,8 +77,9 @@ public class EntityUtils {
     @Nullable
     public static String getPlayerSkin(ItemStack item){
             ResolvableProfile profile = item.get(DataComponents.PROFILE);
-            if (profile != null) {
-                return profile.partialProfile().properties().get("textures").iterator().next().value();
+            if (profile != null ) {
+                var textures = profile.partialProfile().properties().get("textures");
+                if (!textures.isEmpty()) return textures.iterator().next().value();
             }
             return null;
     }

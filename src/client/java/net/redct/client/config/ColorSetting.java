@@ -29,8 +29,8 @@ public class ColorSetting extends Setting {
     public int getAlpha() { return (color >> 24) & 0xFF; }
 
     public void setFromHSBA(float h, float s, float b, int alpha) {
-        notifyChange();
         int rgb = java.awt.Color.HSBtoRGB(h, s, b);
         this.color = ((alpha & 0xFF) << 24) | (rgb & 0x00FFFFFF);
+        notifyChange();
     }
 }

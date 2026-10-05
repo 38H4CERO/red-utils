@@ -6,10 +6,16 @@ import net.redct.client.module.impl.EntityDebugModule;
 import net.redct.client.module.impl.ExampleTextRender;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ModuleManager {
     private static final List<Module> modules = new ArrayList<>();
+
+    private static final Map<String, Module> byId = new HashMap<>();
+    private static final Map<String, Module> byName = new HashMap<>();
+
     private static boolean debugMode = true;
 
     public static void init() {
@@ -24,6 +30,10 @@ public class ModuleManager {
     }
 
     public static void register(Module module) {
+        if (byId.putIfAbsent(module.getID(), module) != null) {
+            throw new IllegalStateException("Duplicate module id: " + module.getID());
+        }
+        byName.putIfAbsent(module.getName(), module);
         modules.add(module);
     }
 
@@ -37,23 +47,17 @@ public class ModuleManager {
                 .toList();
     }
 
-    public static Module getByName(String name) {
-        return modules.stream()
-                .filter(m -> m.getName().equalsIgnoreCase(name))
-                .findFirst()
-                .orElse(null);
-    }
-
     public static Module getByID(String id) {
-        return modules.stream()
-                .filter(m -> m.getID().equalsIgnoreCase(id))
-                .findFirst()
-                .orElse(null);
+        return byId.get(id);
     }
 
-    public static boolean isModuleEnabled(String moduleid) {
-        Module module = getByID(moduleid);
-        return module.isEnabled();
+    public static Module getByName(String name) {
+        return byName.get(name);
+    }
+
+    public static boolean isModuleEnabled(String id) {
+        Module module = byId.get(id);
+        return module != null && module.isEnabled();
     }
 
 }
