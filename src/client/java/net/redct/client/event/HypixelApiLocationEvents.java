@@ -13,7 +13,7 @@ public class HypixelApiLocationEvents {
         api.subscribeToEventPacket(ClientboundLocationPacket.class);
 
         api.createHandler(ClientboundLocationPacket.class, packet -> {
-            // TODO: SKYBLOCK or lobby etc, se recibe cada lobby swap
+            // SKYBLOCK or lobby etc, se recibe cada lobby swap
             packet.getServerType().ifPresent(type -> {
                 Utils.inHypixel=true;
                 //Logger.log("PACKET", "Current server type: " + type.getName());

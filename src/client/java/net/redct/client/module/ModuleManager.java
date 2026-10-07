@@ -1,9 +1,6 @@
 package net.redct.client.module;
 
-import net.redct.client.module.impl.AllInAlloeTracker;
-import net.redct.client.module.impl.DungeonClearAlert;
-import net.redct.client.module.impl.EntityDebugModule;
-import net.redct.client.module.impl.ExampleTextRender;
+import net.redct.client.module.impl.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +20,7 @@ public class ModuleManager {
         register(new ExampleTextRender());
         register(new DungeonClearAlert());
         register(new AllInAlloeTracker());
+        register(new CleanInventory());
 
         if (debugMode){
             register(new EntityDebugModule());

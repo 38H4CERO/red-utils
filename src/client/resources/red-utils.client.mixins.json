@@ -11,7 +11,10 @@
     "MapDataMixin",
     "ScoreBoardMixin",
     "SyncedDataUpdatedMixin",
-    "accessor.EntityAccessor"
+    "HideRecipeBookMixin",
+    "HideOffHandSlotMixin",
+    "accessor.EntityAccessor",
+    "accessor.SlotAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

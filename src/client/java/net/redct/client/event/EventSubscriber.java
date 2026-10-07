@@ -3,6 +3,7 @@ package net.redct.client.event;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.redct.client.module.Module;
 import net.redct.client.module.ModuleManager;
@@ -31,7 +32,7 @@ public class EventSubscriber {
         onEntityUnloadEVENT();
     }
 
-    // TODO: This runs each time you change island
+    // This runs each time you change island
     private static void onServerConnectEVENT() {
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
             //Utils.isOnHypixel();
@@ -68,12 +69,8 @@ public class EventSubscriber {
 
     private static void onLevelRenderEVENT(){
         Tracer tracer = Tracer.getInstance();
-        LevelRenderEvents.END_EXTRACTION.register(context -> {
-            tracer.extractLine(context);
-        });
-        LevelRenderEvents.AFTER_TRANSLUCENT_TERRAIN.register(context -> {
-            tracer.renderAndDrawLines(context);
-        });
+        LevelExtractionEvents.END_EXTRACTION.register(tracer::extractLine);
+        LevelRenderEvents.AFTER_TRANSLUCENT_TERRAIN.register(tracer::renderAndDrawLines);
 
     }
 
@@ -86,7 +83,7 @@ public class EventSubscriber {
             // Some mobs are players
             switch (entity.getType().toShortString()){
                 case "player":
-                    if (entity.getTeam()!= null ? entity.getTeam().getNameTagVisibility().toString().equals("ALWAYS") : false){
+                    if (entity.getTeam() != null && entity.getTeam().getNameTagVisibility().toString().equals("ALWAYS")){
                         // TODO: shows own player
                         //Tracer.setLine(entity.getStringUUID() ,Anchor.player(), Anchor.entity(entity), 3f, ARGB.white(255));
                     }
@@ -119,7 +116,7 @@ public class EventSubscriber {
             }
             switch (entity.getType().toShortString()){
                 case "player":
-                    if (entity.getTeam()!= null ? entity.getTeam().getNameTagVisibility().toString().equals("ALWAYS") : false){
+                    if (entity.getTeam() != null && entity.getTeam().getNameTagVisibility().toString().equals("ALWAYS")){
                         Tracer.removeLine(entity.getStringUUID());
                     }
                     break;

@@ -21,10 +21,12 @@ public abstract class ArmorStandRendererMixin {
         ((HiddenStateAccessor) state).redutils$setHidden(HiddenArmorStands.INSTANCE.isHidden(entity.getUUID()));
     }
 
+    // TODO: This can be optimized more
     @Inject(method = "submit", at = @At("HEAD"), cancellable = true)
     private void redutils$cancelHiddenSubmit(ArmorStandRenderState state, PoseStack poseStack,
                                              SubmitNodeCollector submitNodeCollector,
                                              CameraRenderState camera, CallbackInfo ci) {
+        //ci.cancel();
         if (((HiddenStateAccessor) state).redutils$isHidden()) {
             ci.cancel();
         }
