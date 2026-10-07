@@ -147,8 +147,8 @@ public class GuiTextUtils implements HudInterface {
     public static void sendTitle(String title, String subtitle) {
         Minecraft client = Minecraft.getInstance();
         if (client.player == null) return;
-        client.gui.setTitle(Component.literal(title));
-        client.gui.setSubtitle(Component.literal(subtitle));
-        client.gui.setTimes(0, 30, 10); // fadeIn, stay, fadeOut in ticks
+        client.gui.hud.setTitle(Component.literal(title));
+        client.gui.hud.setSubtitle(Component.literal(subtitle));
+        client.gui.hud.setTimes(0, 30, 10); // fadeIn, stay, fadeOut in ticks
     }
 }

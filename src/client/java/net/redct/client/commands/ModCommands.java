@@ -26,16 +26,17 @@ public class ModCommands {
             dispatcher.register(ClientCommands.literal("ru").executes(context -> {
                 var client = context.getSource().getClient();
                 client.execute(() -> {
-                    if (client.screen == null) {
-                        client.setScreen(new ConfigScreen());
+
+                    if (client.gui.screen() == null) {
+                        client.gui.setScreen(new ConfigScreen());
                     }
                 });
                 return 1;
             }).then(ClientCommands.literal("hud").executes(context -> {
                 var client = context.getSource().getClient();
                 client.execute(() -> {
-                    if (client.screen == null) {
-                        client.setScreen(new HudEditorScreen());
+                    if (client.gui.screen() == null) {
+                        client.gui.setScreen(new HudEditorScreen());
                     }
                 });
                 return 1;
