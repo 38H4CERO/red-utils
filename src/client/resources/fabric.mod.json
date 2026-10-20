@@ -7,7 +7,7 @@
 	"authors": [
 		"RedCherryTree"
 	],
-	"license": "CC0-1.0",
+	"license": "AGPL-3.0",
 	"icon": "assets/red-utils/icon.png",
 	"environment": "client",
 	"entrypoints": {
