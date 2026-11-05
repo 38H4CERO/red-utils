@@ -43,6 +43,7 @@ public class ModCommands {
             })));
         });
 
+        /*
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, buildContext) -> {
             dispatcher.register(ClientCommands.literal("track").then(ClientCommands.literal("add").then(ClientCommands.argument("name", StringArgumentType.string()).executes(context -> {
                                 String name = StringArgumentType.getString(context, "name");
@@ -82,6 +83,8 @@ public class ModCommands {
 
             );
         });
+        */
+
 
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, buildContext) -> {
             dispatcher.register(ClientCommands.literal("tracer").executes(context -> {

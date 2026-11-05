@@ -7,22 +7,19 @@ import net.fabricmc.fabric.api.client.rendering.v1.level.LevelExtractionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.redct.client.module.Module;
 import net.redct.client.module.ModuleManager;
-import net.redct.client.utils.Logger;
 import net.redct.client.utils.Utils;
 import net.redct.client.utils.dungeon.DungeonSession;
 import net.redct.client.utils.entity.EntityManager;
-import net.redct.client.utils.entity.GlowRegistry;
-import net.redct.client.utils.entity.HiddenArmorStands;
 import net.redct.client.utils.render.Tracer;
 
 import static net.redct.client.module.impl.AllInAlloeTracker.*;
 import static net.redct.client.module.impl.AllInAlloeTracker.removeMutation;
 
 public class EventSubscriber {
-
+    static EntityManager em;
     public static void registerToEvents(){
         HypixelApiLocationEvents.register();
-
+        em = EntityManager.getInstance();
         // Fabric Events
         onServerConnectEVENT();
         onServerDisconnectEVENT();
@@ -37,9 +34,7 @@ public class EventSubscriber {
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
             //Utils.isOnHypixel();
             Tracer.clearLines();
-            GlowRegistry.clearGlowRegistry();
-            EntityManager.clearProcessedMobs();
-            HiddenArmorStands.INSTANCE.clear();
+            em.clearEntities();
             clearMutations();
 
         });
@@ -50,9 +45,7 @@ public class EventSubscriber {
             Utils.inHypixel = false;
             DungeonSession.end();
             Tracer.clearLines();
-            GlowRegistry.clearGlowRegistry();
-            EntityManager.clearProcessedMobs();
-            HiddenArmorStands.INSTANCE.clear();
+            em.clearEntities();
             clearMutations();
         });
     }
@@ -81,8 +74,10 @@ public class EventSubscriber {
             //if (entity.getType().toShortString().contains("armor_stand")) return;
             // TODO: Some players are loaded before they get the tag
             // Some mobs are players
+            em.onEntityLoaded(entity);
             switch (entity.getType().toShortString()){
                 case "player":
+                    // TODO: Change to "entity.getUUID().version() == 4;  // Version 2 mob"
                     if (entity.getTeam() != null && entity.getTeam().getNameTagVisibility().toString().equals("ALWAYS")){
                         // TODO: shows own player
                         //Tracer.setLine(entity.getStringUUID() ,Anchor.player(), Anchor.entity(entity), 3f, ARGB.white(255));
@@ -92,14 +87,13 @@ public class EventSubscriber {
                     if (entity.hasCustomName()){
                         // TODO: No estoy del todo seguro si esto es mejor o peor. Igual no hace falta esto, con el mixin sirve
                         // No se puede trackear armor_stands a secas con esto
-                        EntityManager.onNameResolved(entity);
+
                         //Logger.log("Info", "%s", entity.getCustomName());
                     }
 
-                    //checkJellyBeans(entity);
                     break;
                 default:
-                    EntityManager.onNameResolved(entity);
+
                     break;
             }
 
@@ -121,8 +115,6 @@ public class EventSubscriber {
                     }
                     break;
                 case "armor_stand":
-                    HiddenArmorStands.INSTANCE.show(entity.getUUID());
-                    HiddenArmorStands.INSTANCE.removeProccesed(entity.getUUID());
                     removeMutation(entity.getUUID());
                     sortListByStage();
                     Tracer.removeLine(entity.getStringUUID());
@@ -132,9 +124,9 @@ public class EventSubscriber {
 
             }
 
-            GlowRegistry.setGlowing(entity, false);
-            EntityManager.removeProcessedMob(entity.getUUID()); // Aqui solo llegan armor stands creo (a la lista)
+            em.onEntityUnloaded(entity);
         });
+
     }
 
 }

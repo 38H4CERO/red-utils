@@ -11,9 +11,6 @@ import org.jspecify.annotations.Nullable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static net.redct.client.module.impl.AllInAlloeTracker.checkJellyBeans;
-import static net.redct.client.utils.entity.EntityManager.onNameResolved;
-
 public class EntityUtils {
     //private static final String regex = "\\[Lv(?<level>\\d+)\\]\\s+(?:\\p{Co}+\\s*)?(?<name>[A-Za-z]+(?:\\s+[A-Za-z]+)*)\\s+(?<current>[\\d,]+)/(?<max>[\\d,]+)❤";
 
@@ -59,9 +56,8 @@ public class EntityUtils {
         var level = net.minecraft.client.Minecraft.getInstance().level;
         if (level == null) return;
         for (Entity entity : level.entitiesForRendering()) {
-            checkJellyBeans(entity);
             if (entity.getType().toShortString().equals("armor_stand") && entity.hasCustomName()) {
-                onNameResolved(entity);
+                //onNameResolved(entity);
             }
         }
     }

@@ -13,6 +13,7 @@
     "SyncedDataUpdatedMixin",
     "HideRecipeBookMixin",
     "HideOffHandSlotMixin",
+    "LivingEntityMaxHPMixin",
     "accessor.EntityAccessor",
     "accessor.SlotAccessor"
   ],

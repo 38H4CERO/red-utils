@@ -13,10 +13,11 @@ import java.util.concurrent.CompletableFuture;
 public class EntityTrackRemoveSuggestionProvider implements SuggestionProvider<FabricClientCommandSource> {
     @Override
     public CompletableFuture<Suggestions> getSuggestions(CommandContext<FabricClientCommandSource> context, SuggestionsBuilder builder) throws CommandSyntaxException {
+        /*
         for (String mobName: EntityManager.getTrackedNames()){
             String suggestion = mobName.contains(" ") ? "\"" + mobName + "\"" : mobName;
             builder.suggest(suggestion);
-        }
+        }*/
         return builder.buildFuture();
     }
 }

@@ -1,6 +1,8 @@
 package net.redct.client.module.impl;
 
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 import net.redct.client.config.ColorSetting;
 import net.redct.client.config.SliderSetting;
@@ -13,7 +15,9 @@ import net.redct.client.module.ModuleManager;
 import net.redct.client.utils.Logger;
 import net.redct.client.utils.PlayerInfo;
 import net.redct.client.utils.Utils;
-import net.redct.client.utils.entity.HiddenArmorStands;
+import net.redct.client.utils.entity.EntityManager;
+import net.redct.client.utils.entity.EntitySettings;
+import net.redct.client.utils.entity.EntitySettings.EntityFingerprint.ItemMatch;
 import net.redct.client.utils.render.GuiTextUtils;
 import net.redct.client.utils.render.Tracer;
 
@@ -29,6 +33,9 @@ public class AllInAlloeTracker extends Module {
     public static final SliderSetting trigger = new SliderSetting("trigger", "Stage", 14, 0, 27, 1);
     public static final ColorSetting color = new ColorSetting("color", "Color", 0xFFFFFFFF);
 
+    private final EntitySettings JELLYBEAN_HIDE = new EntitySettings();
+    private final EntityManager em = EntityManager.getInstance();
+
     public AllInAlloeTracker() {
         super("all_in_alloe_tracker", "Alloe Track", Category.GARDEN);
         HudManager.register(guiText, this); // register so HudEditorScreen can see and move it
@@ -40,12 +47,19 @@ public class AllInAlloeTracker extends Module {
         trigger.onChange(AllInAlloeTracker::traceAllAlloes);
         color.onChange(AllInAlloeTracker::traceAllAlloes);
 
+        // FingerPrint rules
+        JELLYBEAN_HIDE.fingerprint.entityType = "armor_stand";
+        JELLYBEAN_HIDE.fingerprint.equipment.put(EquipmentSlot.HEAD,
+                new ItemMatch(Items.PLAYER_HEAD, PlayerHeadSkin.MAGIC_JELLYBEAM.getId()));
+        JELLYBEAN_HIDE.fingerprint.locations.add(Location.GARDEN);
+        JELLYBEAN_HIDE.style.hide = true;
+        JELLYBEAN_HIDE.style.glow = false;
+
     }
 
     @Override
     public void onEnable() {
-        HiddenArmorStands.INSTANCE.clear();
-        rescanLoadedArmorStands();
+        em.addSetting(JELLYBEAN_HIDE);
         guiText.setVisible(true);
 
     }
@@ -53,7 +67,7 @@ public class AllInAlloeTracker extends Module {
     @Override
     public void onDisable() {
         guiText.setVisible(false);
-        HiddenArmorStands.INSTANCE.clear();
+        em.removeSetting(JELLYBEAN_HIDE);
     }
 
 
@@ -121,18 +135,6 @@ public class AllInAlloeTracker extends Module {
                 Tracer.setLine(mutation.uuid.toString(), Tracer.Anchor.player(), Tracer.Anchor.fixed(new Vec3(mutation.pos.x()+0.5, alloe_y, mutation.pos.y()+0.5)), 2, color.getColor());
             } else {
                 Tracer.removeLine(mutation.uuid.toString());
-            }
-        }
-    }
-
-    public static void checkJellyBeans(Entity entity) {
-        if (PlayerInfo.INSTANCE.getCurrentLocation() == Location.GARDEN) {
-            if (isModuleEnabled("all_in_alloe_tracker")) {
-                if (HiddenArmorStands.INSTANCE.isProcessed(entity.getUUID())) return;
-                if (PlayerHeadSkin.MAGIC_JELLYBEAM.getId().equals(getArmorStandPlayerHeadSkin(entity))) {
-                    HiddenArmorStands.INSTANCE.setProcessed(entity.getUUID());
-                    HiddenArmorStands.INSTANCE.hide(entity.getUUID());
-                }
             }
         }
     }

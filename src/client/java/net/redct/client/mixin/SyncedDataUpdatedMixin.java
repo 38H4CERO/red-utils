@@ -25,7 +25,7 @@ public abstract class SyncedDataUpdatedMixin {
 
         if (accessor.equals(EntityAccessor.getCustomNameAccessor())) {
             Entity self = (Entity) (Object) this;
-            EntityManager.onNameResolved(self);
+            //EntityManager.onNameResolved(self);
         }
     }
 

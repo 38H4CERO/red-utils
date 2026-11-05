@@ -5,6 +5,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ResolvableProfile;
@@ -41,18 +42,7 @@ public class EntityDebugModule extends Module {
 
         for (Entity e : mc.level.getEntities(mc.player, box)) {
             if (logged.add(e.getUUID())) {
-                /*
-                e.getId()
-                Armor stand tiene +1 de su mob correspondiente, creo
-                 */
-                float health = -1;
-                float maxHealth = -1;
-                if (e instanceof LivingEntity living) {
-                    health = living.getHealth();
-                    maxHealth = living.getMaxHealth();
 
-                }
-                //if (!EntityUtils.isMob(e.getName().getString())) return;
 
                 //GlowRegistry.setGlowing(e, true);
                 if (e instanceof ArmorStand armorStand){
@@ -72,6 +62,7 @@ public class EntityDebugModule extends Module {
 
                          */
                     }
+
                     Logger.log("ARMOR_STAND", "name=%s | pos=[%.1f,%.1f,%.1f] | Head=%s | comp=%s",
                             armorStand.getName().getString(),
                             armorStand.getX(), armorStand.getY(), armorStand.getZ(),
@@ -82,13 +73,20 @@ public class EntityDebugModule extends Module {
                     );
                     return;
                 }
-                Logger.log("ENTITY", "type=%s | name=%s | customName=%s | team=%s | id=%s | pos=[%.1f,%.1f,%.1f]",
+                double maxHP = 0.0;
+                if (e instanceof LivingEntity le){
+                    maxHP = le.getAttributeBaseValue(Attributes.MAX_HEALTH);
+                }
+                Logger.log("ENTITY", "type=%s | name=%s | customName=%s | team=%s | id=%s | pos=[%.1f,%.1f,%.1f] | uuidVer=%s | maxHP=%s",
                         e.getType().toShortString(),
                         e.getName().getString(),
                         e.getCustomName() != null ? e.getCustomName().getString() : "null",
                         e.getTeam()!= null ? e.getTeam().getNameTagVisibility() : "null",
                         e.getId(),
-                        e.getX(), e.getY(), e.getZ()
+                        e.getX(), e.getY(), e.getZ(),
+                        e.getUUID().version(),
+                        maxHP
+
                 );
 
 

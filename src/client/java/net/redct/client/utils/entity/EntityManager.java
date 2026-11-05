@@ -1,97 +1,122 @@
 package net.redct.client.utils.entity;
 
-import net.minecraft.util.ARGB;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.entity.Entity;
-import net.redct.client.utils.Logger;
-import net.redct.client.utils.render.Tracer;
-import net.redct.client.utils.render.Tracer.Anchor;
+import net.minecraft.world.entity.EntityTypes;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.redct.client.data.Location;
+import net.redct.client.utils.PlayerInfo;
 
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-import static net.redct.client.module.impl.AllInAlloeTracker.manageAlloe;
+public final class EntityManager {
+    private final static EntityManager INSTANCE = new EntityManager();
+    // Map<EntityType, Map<CustomName, Settings>>
+    private volatile Map<String, List<EntitySettings>> index = Map.of();
+    private final Map<UUID, EntitySettings> activeMobs = new ConcurrentHashMap<>();
+    private final List<EntitySettings> allSettings = new CopyOnWriteArrayList<>();
 
-public class EntityManager {
-    private static final Set<UUID> processed = ConcurrentHashMap.newKeySet();
-    private static final Set<String> trackedMobNames = ConcurrentHashMap.newKeySet();
-    private static final Set<String> trackedEntityNames = ConcurrentHashMap.newKeySet();
+
+    public static EntityManager getInstance(){
+        return INSTANCE;
+    }
 
 
-    //TODO: Change name to a more descriptibe one
-    public static void onNameResolved(Entity entity) {
+    // TODO: Change all getType() to entity.getType().equals(EntityTypes.ARMOR_STAND)
+    public void tryMatch(Entity e) {
+        double hp = e instanceof LivingEntity le
+                ? le.getAttributeBaseValue(Attributes.MAX_HEALTH) : 0;
+        tryMatch(e, hp);
+    }
 
-        UUID uuid = entity.getUUID();
+    public void tryMatch(Entity e, double maxHP){
 
-        // TODO: ns si meter solo los que brillan
-        if (processed.contains(uuid)) return;
-        if (shouldGlow(entity.getType().toShortString())){
-            GlowRegistry.setGlowing(entity, true);
-            processed.add(uuid);
-            return;
-        }
-        // Regex
+        if (activeMobs.containsKey(e.getUUID())) return;
 
-        if (entity.getCustomName() == null) return;
+        List<EntitySettings> candidates = index.get(e.getType().toShortString());
+        if (candidates == null) return;
 
-        if (!entity.getType().toShortString().equals("armor_stand")) return;
-        String name = EntityUtils.mobNameParse(entity.getCustomName().getString());
 
-        // Normal mob regex
-        if (name != null){
-            if (shouldGlow(name)){
-                // Trick to get entity from armor_stand
-                GlowRegistry.setGlowing(entity.getId()-1, true);
+        Location loc = PlayerInfo.INSTANCE.getCurrentLocation();
+        for (EntitySettings s : candidates) {
+            if (matches(e, maxHP, loc, s.fingerprint)) {
+                activeMobs.put(e.getUUID(), s);
+                return;
             }
-            if (shouldTrace(name)){
-                Tracer.setLine(uuid.toString(), Anchor.player(), Anchor.entity(entity), 3f, ARGB.white(255));
+        }
+
+    }
+
+    public void setSettings(Collection<EntitySettings> all) {
+        Map<String, List<EntitySettings>> m = new HashMap<>();
+        for (EntitySettings s : all)
+            m.computeIfAbsent(s.fingerprint.entityType, k -> new ArrayList<>()).add(s);
+        index = m;
+        activeMobs.clear();
+
+        if (Minecraft.getInstance() == null) return;
+        ClientLevel level = Minecraft.getInstance().level;
+        if (level == null) return;
+        for (Entity e : level.entitiesForRendering()) {
+            if (e instanceof LivingEntity le) {
+                tryMatch(le, le.getAttributeBaseValue(Attributes.MAX_HEALTH));
             }
-            processed.add(uuid);
-        } else {
-            manageAlloe(entity);
-            //System.out.println("[LOG] no mob entity = "+ customName.getString());
-        }
-
-
-
-    }
-
-    public static void clearProcessedMobs(){
-        processed.clear();
-    }
-
-    public static void addMobTypeGlowing(String name){
-        trackedMobNames.add(name);
-    }
-
-    public static void addEntityTypeGlowing(String name){
-        if (trackedEntityNames.contains(name)) {
-            trackedEntityNames.remove(name);
-        } else {
-            trackedEntityNames.add(name);
         }
     }
 
-    // TODO: esto esta mal, si algo brilla seguira brillando
-    public static void removeMobTypeGlowing(String name){
-        trackedMobNames.remove(name);
+    private boolean matches(Entity e, double maxHP, Location loc, EntitySettings.EntityFingerprint fp) {
+        if (!fp.locationMatches(loc)) return false;
+        if (!fp.hpMatches(maxHP)) return false;
+
+        if (e.getType() == EntityTypes.PLAYER){
+            boolean real = e.getUUID().version() == 4;
+            if (real != fp.RealPlayer) return false;
+            if (!fp.name.equalsIgnoreCase(e.getName().getString().trim())) return false;
+
+            // Skin check??
+        }
+
+        // Equipment comparation
+        if (!fp.equipment.isEmpty()){
+            if (!(e instanceof LivingEntity le)) return false;
+            for (var entry : fp.equipment.entrySet()){
+                if (!entry.getValue().matches(le.getItemBySlot(entry.getKey()))) return false;
+            }
+        }
+
+        return true;
     }
 
-    public static void removeProcessedMob(UUID uuid){
-        processed.remove(uuid);
+    public void addSetting(EntitySettings s) {
+        if (allSettings.contains(s)) return;
+        allSettings.add(s);
+        setSettings(allSettings);
     }
 
-    public static List<String> getTrackedNames() {
-        return List.copyOf(trackedMobNames);
+    public void removeSetting(EntitySettings s) {
+        allSettings.remove(s);
+        setSettings(allSettings);
     }
 
-    private static boolean shouldGlow(String name){
-        return (trackedEntityNames.contains(name) || trackedMobNames.contains(name));
+    public void onEntityUnloaded(Entity e) {
+        activeMobs.remove(e.getUUID());
     }
 
-    private static boolean shouldTrace(String name){
-        return false;
+    public void onEntityLoaded(Entity e) {
+        if (e.getUUID().version() == 4){
+            //onHealthUpdated((e), 20);
+        }
     }
+
+    public void clearEntities(){
+        activeMobs.clear();
+    }
+
+    public EntitySettings get(Entity e) { return activeMobs.get(e.getUUID()); }
+
 
 }
