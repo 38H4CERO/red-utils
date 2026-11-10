@@ -15,7 +15,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class EntityManager {
     private final static EntityManager INSTANCE = new EntityManager();
-    // Map<EntityType, Map<CustomName, Settings>>
+    // Map<EntityType, Setting>
     private volatile Map<String, List<EntitySettings>> index = Map.of();
     private final Map<UUID, EntitySettings> activeMobs = new ConcurrentHashMap<>();
     private final List<EntitySettings> allSettings = new CopyOnWriteArrayList<>();
@@ -34,7 +34,6 @@ public final class EntityManager {
     }
 
     public void tryMatch(Entity e, double maxHP){
-
         if (activeMobs.containsKey(e.getUUID())) return;
 
         List<EntitySettings> candidates = index.get(e.getType().toShortString());
@@ -74,7 +73,7 @@ public final class EntityManager {
 
         if (e.getType() == EntityTypes.PLAYER){
             boolean real = e.getUUID().version() == 4;
-            if (real != fp.RealPlayer) return false;
+            if (real != fp.realPlayer) return false;
             if (!fp.name.equalsIgnoreCase(e.getName().getString().trim())) return false;
 
             // Skin check??

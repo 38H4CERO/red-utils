@@ -4,9 +4,12 @@ import net.fabricmc.api.ClientModInitializer;
 
 import net.redct.client.commands.ModCommands;
 import net.redct.client.config.ConfigManager;
+import net.redct.client.data.Location;
 import net.redct.client.event.EventSubscriber;
 import net.redct.client.gui.hud.HudManager;
 import net.redct.client.module.ModuleManager;
+import net.redct.client.utils.entity.EntityManager;
+import net.redct.client.utils.entity.EntitySettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,5 +30,10 @@ public class RedUtilsClient implements ClientModInitializer {
 		ConfigManager.load();
 		EventSubscriber.registerToEvents();
 		ModCommands.register();
+		EntitySettings sett = new EntitySettings();
+		sett.fingerprint.entityType = "zombie";
+		sett.fingerprint.maxHealth.add(250000L);
+		sett.fingerprint.locations.add(Location.CRYSTAL_HOLLOWS);
+		EntityManager.getInstance().addSetting(sett);
 	}
 }

@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import static net.redct.client.utils.entity.EntityUtils.getArmorStandPlayerHeadSkin;
 
 public class EntityDebugModule extends Module {
     private final Set<UUID> logged = new HashSet<>();
@@ -63,11 +62,11 @@ public class EntityDebugModule extends Module {
                          */
                     }
 
-                    Logger.log("ARMOR_STAND", "name=%s | pos=[%.1f,%.1f,%.1f] | Head=%s | comp=%s",
+                    Logger.log("ARMOR_STAND", "name=%s | pos=[%.1f,%.1f,%.1f] | Head=%s",
                             armorStand.getName().getString(),
                             armorStand.getX(), armorStand.getY(), armorStand.getZ(),
-                            armorStand.getItemBySlot(EquipmentSlot.HEAD).toString(),
-                            getArmorStandPlayerHeadSkin(e)
+                            armorStand.getItemBySlot(EquipmentSlot.HEAD).toString()
+
 
 
                     );

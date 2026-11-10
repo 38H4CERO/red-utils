@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class EntitySettings {
-
+    public String label;
     public TrackStyle style = new TrackStyle();
     public EntityFingerprint fingerprint = new EntityFingerprint();
 
@@ -37,7 +37,7 @@ public class EntitySettings {
     public static final class EntityFingerprint {
         public Set<Location> locations = new HashSet<>();
         public String entityType;
-        public boolean RealPlayer = false;
+        public boolean realPlayer = false;
         // If isPlayer=true then player name
         public String name;
         // in dungeons doesnt work, runic neither (x4 hp)
@@ -59,6 +59,8 @@ public class EntitySettings {
             public String skin;
 
             public ItemMatch() {
+                this.item = null;
+                this.skin = null;
             }
 
             public ItemMatch(Item item, String skin) {

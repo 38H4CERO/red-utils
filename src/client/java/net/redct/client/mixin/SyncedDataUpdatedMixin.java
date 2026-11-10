@@ -2,6 +2,7 @@ package net.redct.client.mixin;
 
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityTypes;
 import net.redct.client.mixin.accessor.EntityAccessor;
 import net.redct.client.utils.Logger;
 import net.redct.client.utils.Utils;
@@ -22,11 +23,12 @@ public abstract class SyncedDataUpdatedMixin {
     )
     private void onSyncedDataUpdated(EntityDataAccessor<?> accessor, CallbackInfo ci) {
         if (!Utils.inHypixel) return;
+        if (accessor != EntityAccessor.getCustomNameAccessor()) return;
 
-        if (accessor.equals(EntityAccessor.getCustomNameAccessor())) {
-            Entity self = (Entity) (Object) this;
-            //EntityManager.onNameResolved(self);
-        }
+        Entity self = (Entity) (Object) this;
+        if (self.getType() != EntityTypes.ARMOR_STAND) return;
+
+        manageAlloe(self);
     }
 
 

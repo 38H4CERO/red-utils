@@ -15,7 +15,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static net.redct.client.module.ModuleManager.isModuleEnabled;
-import static net.redct.client.utils.entity.EntityUtils.getArmorStandPlayerHeadSkin;
 
 @Mixin(LivingEntity.class)
 public class LivingEntityEquipmentMixin {

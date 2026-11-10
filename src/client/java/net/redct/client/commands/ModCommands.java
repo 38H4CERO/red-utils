@@ -11,7 +11,6 @@ import net.redct.client.gui.config.ConfigScreen;
 import net.redct.client.gui.hud.impl.HudEditorScreen;
 import net.redct.client.utils.entity.EntityManager;
 import net.redct.client.utils.entity.EntityUtils;
-import net.redct.client.utils.entity.GlowRegistry;
 import net.redct.client.utils.render.Tracer;
 import net.redct.client.utils.render.Tracer.Anchor;
 

@@ -25,8 +25,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static net.redct.client.module.ModuleManager.isModuleEnabled;
-import static net.redct.client.utils.entity.EntityUtils.getArmorStandPlayerHeadSkin;
-import static net.redct.client.utils.entity.EntityUtils.rescanLoadedArmorStands;
 
 public class AllInAlloeTracker extends Module {
     public static GuiTextUtils guiText = new GuiTextUtils("alloe_tracker", 4, 12, 1.2f);
@@ -73,7 +71,6 @@ public class AllInAlloeTracker extends Module {
 
     private static final Map<UUID, MutationStand> mutations = new ConcurrentHashMap<>();
     private static List<MutationStand> orderedStages;
-    private static final Set<String> lines = ConcurrentHashMap.newKeySet();
     private static final double alloe_y = 75.5;
     public record MutationStand(Utils.Vec2 pos, int stage, UUID uuid) {
 
@@ -108,7 +105,6 @@ public class AllInAlloeTracker extends Module {
 
     private static String buildString() {
         if (orderedStages.isEmpty()) {
-            clearAllLines();
             return "";
         }
         StringBuilder text = new StringBuilder("All-in-Alloe:");
@@ -141,12 +137,20 @@ public class AllInAlloeTracker extends Module {
 
     public static void manageAlloe(Entity entity) {
         if (!ModuleManager.isModuleEnabled("all_in_alloe_tracker")) return;
-        if (!PlayerInfo.INSTANCE.getCurrentLocation().equals(Location.GARDEN)) return;
-        //if (!entity.hasCustomName()) return;
-        String name = entity.getCustomName().getString();
+        if (PlayerInfo.INSTANCE.getCurrentLocation() != Location.GARDEN) return;
+        String name = entity.hasCustomName() ? entity.getCustomName().getString() : "";
         int stage = checkAlloeStage(name);
-        if (stage == -1) return;
+        if (stage == -1) {
+            removeStage(entity.getUUID());
+            return;
+        }
         addMutation(entity, stage);
+        sortListByStage();
+    }
+
+    public static void removeStage(UUID id) {
+        if (mutations.remove(id) == null) return;      // wasn't tracked
+        Tracer.removeLine(id.toString());
         sortListByStage();
     }
 
@@ -159,11 +163,5 @@ public class AllInAlloeTracker extends Module {
             return -1;
         }
 
-    }
-
-    private static void clearAllLines(){
-        for  (String id : lines) {
-            Tracer.removeLine(id);
-        }
     }
 }
